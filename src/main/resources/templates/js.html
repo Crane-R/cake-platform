@@ -1,0 +1,17 @@
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<div th:fragment="js">
+    <!-- fraimwork - jquery include -->
+    <script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script src="../static/js/popper.min.js" th:src="@{/js/popper.min.js}"></script>
+    <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+
+    <!-- carousel - jquery plugins collection -->
+    <script src="../static/js/jquery-plugins-collection.js" th:src="@{/js/jquery-plugins-collection.js}"></script>
+
+    <!-- google map  -->
+    <script src="http://ditu.google.cn/maps/api/js?key=AIzaSyDk2HrmqE4sWSei0XdKGbOMOHN3Mm2Bf-M&ver=2.1.6"></script>
+    <script src="../static/js/gmaps.min.js" th:src="@{/js/gmaps.min.js}"></script>
+
+    <!-- custom - main-js -->
+    <script src="../static/js/main.js" th:src="@{/js/main.js}"></script>
+</div>

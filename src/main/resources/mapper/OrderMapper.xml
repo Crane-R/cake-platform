@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crane.cpb.mapper.OrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.crane.cpb.model.domain.Order">
+            <id property="orderId" column="order_id" jdbcType="VARCHAR"/>
+            <result property="orderDate" column="order_date" jdbcType="TIMESTAMP"/>
+            <result property="totalPrice" column="total_price" jdbcType="DECIMAL"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        order_id,order_date,total_price,
+        status,user_id,is_delete
+    </sql>
+</mapper>

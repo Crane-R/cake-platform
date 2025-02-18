@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/cake_platform
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  application:
+    name: cake-platform-backend
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    encoding: UTF-8 #编码
+    suffix: .html #模板后缀
+    mode: HTML #模板
