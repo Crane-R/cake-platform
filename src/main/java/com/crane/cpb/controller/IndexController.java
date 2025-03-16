@@ -1,5 +1,6 @@
 package com.crane.cpb.controller;
 
+import com.crane.cpb.service.CakeService;
 import com.crane.cpb.service.ShoppingCartService;
 import com.crane.cpb.service.TagService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,11 +18,13 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @RestController
 @RequiredArgsConstructor
-public class JumpController {
+public class IndexController {
 
     private final ShoppingCartService shoppingCartService;
 
     private final TagService tagService;
+
+    private final CakeService cakeService;
 
     /**
      * 跳转至首页
@@ -34,6 +37,8 @@ public class JumpController {
         modelAndView.setViewName("index");
         shoppingCartService.setCartData(request, modelAndView);
         tagService.setTagsType(modelAndView);
+        //获取轮播图数据
+        cakeService.setCarouselImage(modelAndView);
         return modelAndView;
     }
 

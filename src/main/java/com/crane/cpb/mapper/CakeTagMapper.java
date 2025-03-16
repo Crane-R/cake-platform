@@ -16,7 +16,7 @@ import java.util.Map;
 public interface CakeTagMapper extends BaseMapper<CakeTag> {
 
     @Select("select tag.tag_id,count(*) tagCount from cake_tag right join tag on cake_tag.tag_id = tag.tag_id " +
-            "where cake_tag.cake_id is not null and tag.is_type = 1 group by cake_tag.tag_id order by tagCount desc limit 10")
+            "where cake_tag.cake_id is not null and tag.is_type = 1 group by cake_tag.tag_id order by tagCount desc limit 11")
     List<Map<String, Object>> selectTagListDesc10();
 
 }
