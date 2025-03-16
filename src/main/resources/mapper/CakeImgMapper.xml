@@ -6,11 +6,12 @@
 
     <resultMap id="BaseResultMap" type="com.crane.cpb.model.domain.CakeImg">
             <id property="ciId" column="ci_id" jdbcType="BIGINT"/>
+            <result property="cakeId" column="cake_id" jdbcType="BIGINT"/>
             <result property="attachmentName" column="attachment_name" jdbcType="VARCHAR"/>
             <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        ci_id,attachment_name,is_delete
+        ci_id,cake_id,attachment_name,is_delete
     </sql>
 </mapper>

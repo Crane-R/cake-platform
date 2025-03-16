@@ -64,4 +64,16 @@ public class CakeController {
         return modelAndView;
     }
 
+    /**
+     * 跳转至商品详情
+     **/
+    @GetMapping("/showOne/{cakeId}")
+    public ModelAndView showOne(@PathVariable Long cakeId, HttpServletRequest request) {
+        Cake byId = cakeService.getById(cakeId);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("cake", cakeService.toVo(byId));
+        modelAndView.setViewName("shop_details");
+        return modelAndView;
+    }
+
 }

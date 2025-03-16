@@ -1,8 +1,10 @@
 package com.crane.cpb.model.domain.vo;
 
+import com.crane.cpb.model.domain.CakeImg;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 蛋糕vo
@@ -24,5 +26,7 @@ public class CakeVo {
     private BigDecimal amount;
 
     private String attachmentName;
+
+    private List<CakeImg> cakeImgList;
 
 }

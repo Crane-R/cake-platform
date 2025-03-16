@@ -45,8 +45,11 @@ public class CakeServiceImpl extends ServiceImpl<CakeMapper, Cake>
         cakeVo.setName(cake.getName());
         cakeVo.setPrice(cake.getPrice());
         cakeVo.setCakeId(cake.getCakeId());
-        CakeImg ciId = cakeImgMapper.selectList(new QueryWrapper<CakeImg>().eq("ci_id", cake.getCakeId())).getFirst();
-        cakeVo.setAttachmentName(ciId.getAttachmentName());
+        List<CakeImg> cakeImgList = cakeImgMapper.selectList(new QueryWrapper<CakeImg>().eq("cake_id", cake.getCakeId()));
+        if (!cakeImgList.isEmpty()) {
+            cakeVo.setAttachmentName(cakeImgList.getFirst().getAttachmentName());
+            cakeVo.setCakeImgList(cakeImgList);
+        }
         return cakeVo;
     }
 }

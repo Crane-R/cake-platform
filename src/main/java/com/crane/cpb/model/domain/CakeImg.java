@@ -18,6 +18,8 @@ public class CakeImg {
     @TableId(type = IdType.AUTO)
     private Long ciId;
 
+    private Long cakeId;
+
     /**
      * 附件名称
      */

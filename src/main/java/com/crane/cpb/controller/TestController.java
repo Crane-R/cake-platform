@@ -78,11 +78,15 @@ public class TestController {
             cake.setPrice(RandomUtil.randomBigDecimal(new BigDecimal(100), new BigDecimal(1000)));
             cake.setMerchantId(-1L);
             cakeService.save(cake);
-            String cakeImgName = getCakeImgName();
-            CakeImg cakeImg = new CakeImg();
-            cakeImg.setAttachmentName(cakeImgName);
-            cakeImg.setCiId(cake.getCakeId());
-            cakeImgService.save(cakeImg);
+            //添加蛋糕图片
+            int imgCount = RandomUtil.randomInt(1, 9);
+            for (int j = 0; j < imgCount; j++) {
+                String cakeImgName = getCakeImgName();
+                CakeImg cakeImg = new CakeImg();
+                cakeImg.setAttachmentName(cakeImgName);
+                cakeImg.setCakeId(cake.getCakeId());
+                cakeImgService.save(cakeImg);
+            }
             //添加蛋糕标签关联数据
             int tagCount = RandomUtil.randomInt(0, 4);
             for (int j = 0; j < tagCount; j++) {
