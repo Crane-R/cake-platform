@@ -52,7 +52,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
         order.setTotalPrice(totalPrice);
         boolean save = save(order);
         if (!save) {
-            throw new RuntimeException("报错订单失败");
+            throw new RuntimeException("下单失败");
         }
         for (CartItem cartItem : cartItems) {
             OrderItem orderItem = new OrderItem();
