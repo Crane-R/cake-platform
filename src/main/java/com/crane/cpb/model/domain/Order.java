@@ -14,7 +14,7 @@ import java.util.Date;
  * 订单
  * @TableName order
  */
-@TableName(value ="order")
+@TableName(value ="`order`")
 @Data
 public class Order implements Serializable {
     /**

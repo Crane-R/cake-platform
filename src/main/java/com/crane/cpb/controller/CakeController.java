@@ -73,6 +73,7 @@ public class CakeController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("cake", cakeService.toVo(byId));
         modelAndView.setViewName("shop_details");
+        shoppingCartService.setCartData(request, modelAndView);
         return modelAndView;
     }
 

@@ -1,6 +1,7 @@
 package com.crane.cpb.controller;
 
 import com.crane.cpb.service.CakeService;
+import com.crane.cpb.service.CakeTagService;
 import com.crane.cpb.service.ShoppingCartService;
 import com.crane.cpb.service.TagService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +27,8 @@ public class IndexController {
 
     private final CakeService cakeService;
 
+    private final CakeTagService cakeTagService;
+
     /**
      * 跳转至首页
      *
@@ -39,6 +42,7 @@ public class IndexController {
         tagService.setTagsType(modelAndView);
         //获取轮播图数据
         cakeService.setCarouselImage(modelAndView);
+        cakeService.setLatestCake(modelAndView);
         return modelAndView;
     }
 
@@ -53,5 +57,20 @@ public class IndexController {
         modelAndView.setViewName(path);
         return modelAndView;
     }
+
+//    /**
+//     * 搜索接口
+//     **/
+//    @GetMapping("/search/{word}")
+//    public ModelAndView search(@PathVariable String word, @RequestParam Long typeId, HttpServletRequest request) {
+//        QueryWrapper<Cake> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.likeRight("name", word);
+//        if(typeId != null) {
+//            List<CakeTag> tagId = cakeTagService.list(new QueryWrapper<CakeTag>().eq("tag_id", typeId));
+//            List<Long> list = tagId.stream().map(CakeTag::getCakeId).toList();
+//            queryWrapper.in("cake_id", list);
+//        }
+//        return cakeService.queryPage(queryWrapper,);
+//    }
 
 }

@@ -65,6 +65,7 @@ public class CakeServiceImpl extends ServiceImpl<CakeMapper, Cake>
             List<Tag> tagList = tagMapper.selectList(new QueryWrapper<Tag>().in("tag_id", tagIds));
             cakeVo.setTagList(tagList);
         }
+        cakeVo.setLaunchDate(cake.getLaunchDate());
         return cakeVo;
     }
 
@@ -74,6 +75,18 @@ public class CakeServiceImpl extends ServiceImpl<CakeMapper, Cake>
         List<CakeVo> list = list(new QueryWrapper<Cake>().last("limit 5")).stream().map(this::toVo).toList();
         modelAndView.addObject("carouselImages", list);
     }
+
+    @Override
+    public void setLatestCake(ModelAndView modelAndView) {
+        List<CakeVo> list = this.list(new QueryWrapper<Cake>().orderByAsc("launch_date").last("limit 8")).stream().map(this::toVo).toList();
+        modelAndView.addObject("latestCake", list);
+    }
+
+//    @Override
+//    public ModelAndView queryPage(QueryWrapper<Cake> queryWrapper, Integer pageNum, HttpServletRequest request) {
+//
+//        return modelAndView;
+//    }
 }
 
 

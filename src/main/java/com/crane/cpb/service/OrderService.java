@@ -1,7 +1,8 @@
 package com.crane.cpb.service;
 
-import com.crane.cpb.model.domain.Order;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.crane.cpb.model.domain.Order;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
 * @author Xanthos
@@ -9,5 +10,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2025-02-12 14:28:05
 */
 public interface OrderService extends IService<Order> {
+
+    Boolean checkout(HttpServletRequest request);
 
 }

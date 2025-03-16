@@ -5,16 +5,18 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 蛋糕表
+ *
  * @TableName cake
  */
-@TableName(value ="cake")
+@TableName(value = "cake")
 @Data
 public class Cake implements Serializable {
     /**
-     * 
+     *
      */
     @TableId(type = IdType.AUTO)
     private Long cakeId;
@@ -40,10 +42,12 @@ public class Cake implements Serializable {
     private Long merchantId;
 
     /**
-     * 
+     *
      */
     @TableLogic
     private Integer isDelete;
+
+    private Date launchDate;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

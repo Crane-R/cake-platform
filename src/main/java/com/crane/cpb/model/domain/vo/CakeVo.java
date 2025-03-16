@@ -5,6 +5,7 @@ import com.crane.cpb.model.domain.Tag;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,5 +32,7 @@ public class CakeVo {
     private List<CakeImg> cakeImgList;
 
     private List<Tag> tagList;
+
+    private Date launchDate;
 
 }

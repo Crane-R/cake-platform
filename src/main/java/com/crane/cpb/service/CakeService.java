@@ -28,4 +28,11 @@ public interface CakeService extends IService<Cake> {
      **/
     void setCarouselImage(ModelAndView modelAndView);
 
+    /**
+     * 获取最新推出的蛋糕
+     **/
+    void setLatestCake(ModelAndView modelAndView);
+
+//    ModelAndView queryPage(QueryWrapper<Cake> queryWrapper, Integer pageNum, HttpServletRequest request);
+
 }

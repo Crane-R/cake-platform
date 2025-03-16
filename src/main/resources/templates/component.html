@@ -73,17 +73,11 @@
                             <div class="select_option mb-0 clearfix">
                                 <select>
                                     <option data-display="类别">选择类别</option>
-                                    <option value="1">New Arrival Product1s</option>
-                                    <option value="2">Most Popular Products</option>
-                                    <option value="3">Deals of the day</option>
-                                    <option value="4">Mobile Accessories</option>
-                                    <option value="5">Computer Accessories</option>
-                                    <option value="6">Consumer Electronics</option>
-                                    <option value="7">Automobiles & Motorcycles</option>
+                                    <option th:value="${type.tagId}" name="typeId" th:each="type:${typeList}" th:text="${type.name}"></option>
                                 </select>
                             </div>
                             <div class="form_item">
-                                <input type="search" name="search" placeholder="Search Prudcts...">
+                                <input type="search" name="search" placeholder="输入搜索信息...">
                                 <button type="submit" class="search_btn"><i class="far fa-search"></i></button>
                             </div>
                         </div>
@@ -100,9 +94,9 @@
                     <button type="button" class="cart_btn">
                                 <span class="cart_icon">
                                     <i class="icon icon-ShoppingCart"></i>
-                                    <small class="cart_counter">3</small>
+                                    <small class="cart_counter" th:text="${cartSize}">3</small>
                                 </span>
-                        <span class="cart_amount">$909.00</span>
+                        <span class="cart_amount" th:text="'￥'+${subtotal}">$909.00</span>
                     </button>
                 </div>
 
@@ -124,13 +118,17 @@
                                     id="statsIconTitle">Stats</title>
                                 <path d="M6 7L15 7M6 12L18 12M6 17L12 17"/>
                             </svg>
-                            Browse categories
+                            浏览分类
                         </button>
                         <div class="allcategories_collapse collapse" id="allcategories_collapse">
                             <div class="card card-body">
-                                <ul class="allcategories_list ul_li_block" th:each="type : ${typeList}">
-                                    <li><a href="shop_grid.html"><i class="icon icon-Star"></i><span
-                                            th:text="${type.name}"></span></a></li>
+                                <ul class="allcategories_list ul_li_block" >
+                                    <li th:each="type : ${typeList}">
+                                        <a href="shop_grid.html">
+                                            <i class="icon icon-Star"></i>
+                                            <span th:text="${type.name}"></span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -152,14 +150,8 @@
                                         <li><a href="index-2.html">主页2</a></li>
                                     </ul>
                                 </li>
-                                <li class="dropdown">
-                                    <a class="nav-link" href="#" id="shop_submenu" role="button"
-                                       data-bs-toggle="dropdown" aria-expanded="false">商品</a>
-                                    <ul class="submenu dropdown-menu" aria-labelledby="shop_submenu">
-                                        <li><a href="/cake/grid/1">商品网格视图</a></li>
-                                        <li><a href="shop_list.html">商品列表视图</a></li>
-                                        <li><a href="shop_details.html">Shop Details</a></li>
-                                    </ul>
+                                <li>
+                                    <a class="nav-link" href="/cake/grid/1">商品</a>
                                 </li>
                                 <li class="dropdown">
                                     <a class="nav-link" href="#" id="blog_submenu" role="button"

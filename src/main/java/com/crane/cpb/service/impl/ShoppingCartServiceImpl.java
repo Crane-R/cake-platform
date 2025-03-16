@@ -2,7 +2,6 @@ package com.crane.cpb.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.crane.cpb.constant.Constant;
 import com.crane.cpb.mapper.ShoppingCartMapper;
 import com.crane.cpb.model.domain.Cake;
 import com.crane.cpb.model.domain.ShoppingCart;
@@ -20,7 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Xanthos
@@ -40,15 +38,13 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
     public List<CartItem> userCartList(HttpServletRequest request) {
         User user = userService.currentUser(request);
         QueryWrapper<ShoppingCart> wrapper = new QueryWrapper<>();
-        wrapper.select("user_id as userId", "cake_id as cakeId", "count(*) as count");
         wrapper.eq("user_id", user.getUserId());
-        wrapper.groupBy("cake_id");
-        List<Map<String, Object>> items = this.listMaps(wrapper);
+        List<ShoppingCart> shoppingCarts = this.list(wrapper);
         List<CartItem> resultList = new ArrayList<>();
-        items.forEach(item -> {
+        shoppingCarts.forEach(item -> {
             CartItem cartItem = new CartItem();
-            int num = Integer.parseInt(item.get("count").toString());
-            Cake cake = cakeService.getById(item.get("cakeId").toString());
+            int num = item.getQuantity();
+            Cake cake = cakeService.getById(item.getCakeId());
             CakeVo cakeVo = cakeService.toVo(cake);
             cakeVo.setAmount(cake.getPrice().multiply(new BigDecimal(num)));
             cartItem.setCake(cakeVo);
@@ -63,10 +59,11 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         List<CartItem> cartItems = userCartList(request);
         BigDecimal subtotal = BigDecimal.ZERO;
         for (CartItem cartItem : cartItems) {
-            subtotal = subtotal.add(cartItem.getCake().getPrice());
+            subtotal = subtotal.add(cartItem.getCake().getPrice().multiply(new BigDecimal(cartItem.getNum())));
         }
-        modelAndView.addObject(Constant.CART_ITEMS, cartItems);
-        modelAndView.addObject(Constant.SUBTOTAL, subtotal);
+        modelAndView.addObject("cartItems", cartItems);
+        modelAndView.addObject("subtotal", subtotal);
+        modelAndView.addObject("cartSize", cartItems.size());
     }
 
 }
