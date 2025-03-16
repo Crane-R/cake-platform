@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crane.cpb.mapper.CakeTagMapper">
+
+    <resultMap id="BaseResultMap" type="com.crane.cpb.model.domain.CakeTag">
+            <id property="ctId" column="ct_id" jdbcType="BIGINT"/>
+            <result property="cakeId" column="cake_id" jdbcType="BIGINT"/>
+            <result property="tagId" column="tag_id" jdbcType="BIGINT"/>
+            <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ct_id,cake_id,tag_id,
+        is_delete
+    </sql>
+</mapper>

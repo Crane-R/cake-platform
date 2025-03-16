@@ -5020,7 +5020,7 @@ hr {
 .product_details_content .quantity_input:before {
   font-weight: 500;
   margin-right: 10px;
-  content: "Quantity:";
+  content: "数量:";
   color: #252525;
   display: inline-block;
 }
@@ -8236,7 +8236,7 @@ hr {
 }
 
 /* 4 - Responsive For Mobile & Tablet Devices
-================================================== 
+==================================================
 * Project Name   :  Stowaa -  Ecommerce HTML Template
 * File           :  CSS Base
 * Version        :  1.0.0
@@ -8244,7 +8244,7 @@ hr {
 * Author         :  WP Studio
 * Developer		 :  Avi Aminov
 *	css code for responsive layout To make Responsive
-================================================== 
+==================================================
 */
 /* media screen and (max-width: 1440px) - start
 ================================================== */

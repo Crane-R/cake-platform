@@ -15,4 +15,6 @@ public interface UserService extends IService<User> {
 
     Boolean login(User user, HttpServletRequest request);
 
+    User currentUser(HttpServletRequest request);
+
 }

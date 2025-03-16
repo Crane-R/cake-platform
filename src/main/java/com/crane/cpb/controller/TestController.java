@@ -1,9 +1,29 @@
 package com.crane.cpb.controller;
 
+import cn.hutool.core.util.RandomUtil;
+import com.crane.cpb.model.domain.Cake;
+import com.crane.cpb.model.domain.CakeImg;
+import com.crane.cpb.model.domain.CakeTag;
+import com.crane.cpb.model.domain.Tag;
+import com.crane.cpb.service.CakeImgService;
+import com.crane.cpb.service.CakeService;
+import com.crane.cpb.service.CakeTagService;
+import com.crane.cpb.service.TagService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 启动测试
@@ -13,7 +33,16 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @RestController
 @Slf4j
+@RequiredArgsConstructor
 public class TestController {
+
+    private final CakeService cakeService;
+
+    private final CakeImgService cakeImgService;
+
+    private final TagService tagService;
+
+    private final CakeTagService cakeTagService;
 
     @GetMapping("/test")
     public String test() {
@@ -26,6 +55,82 @@ public class TestController {
         modelAndView.setViewName("index");
         modelAndView.addObject("title", "蛋糕管理系统");
         return modelAndView;
+    }
+
+    /**
+     * 批量生成蛋糕数据
+     * 会为其添加一张图片
+     *
+     * @date 2025/3/2 12:22
+     **/
+    @GetMapping("/getCake/{num}")
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
+    public String generateCakeData(@PathVariable Integer num) {
+        if (num == null) {
+            throw new RuntimeException("num不可为空");
+        }
+        List<Tag> list = tagService.list();
+        int count = 0;
+        for (int i = 0; i < num; i++) {
+            Cake cake = new Cake();
+            cake.setName(RandomUtil.randomString(6));
+            cake.setDescription(RandomUtil.randomString(10));
+            cake.setPrice(RandomUtil.randomBigDecimal(new BigDecimal(100), new BigDecimal(1000)));
+            cake.setMerchantId(-1L);
+            cakeService.save(cake);
+            String cakeImgName = getCakeImgName();
+            CakeImg cakeImg = new CakeImg();
+            cakeImg.setAttachmentName(cakeImgName);
+            cakeImg.setCiId(cake.getCakeId());
+            cakeImgService.save(cakeImg);
+            //添加蛋糕标签关联数据
+            int tagCount = RandomUtil.randomInt(0, 4);
+            for (int j = 0; j < tagCount; j++) {
+                CakeTag cakeTag = new CakeTag();
+                cakeTag.setCakeId(cake.getCakeId());
+                cakeTag.setTagId(list.get(RandomUtil.randomInt(0, list.size())).getTagId());
+                cakeTagService.save(cakeTag);
+            }
+            count++;
+        }
+        return "成功添加数：" + count;
+    }
+
+    /**
+     * 随机获得一张图片名称
+     *
+     * @date 2025/3/2 12:29
+     **/
+    private String getCakeImgName() {
+        // 创建一个PathMatchingResourcePatternResolver实例，用于解析资源模式
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        // 根据指定的路径模式获取资源数组
+        Resource[] resources;
+        try {
+            resources = resolver.getResources("classpath:static/cake_imgs/*");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return resources[(int) (Math.random() * resources.length)].getFilename();
+    }
+
+    /**
+     * 批量生成标签
+     **/
+    @GetMapping("/getTag/{num}")
+    public String getTag(@PathVariable Integer num) {
+        if (num == null) {
+            throw new RuntimeException("num不可为空");
+        }
+        int count = 0;
+        for (int i = 0; i < num; i++) {
+            Tag tag = new Tag();
+            tag.setIsType(RandomUtil.randomInt(0, 2));
+            tag.setName(RandomUtil.randomString(6));
+            tagService.save(tag);
+            count++;
+        }
+        return "成功添加数：" + count;
     }
 
 }

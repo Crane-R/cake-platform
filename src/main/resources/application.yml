@@ -15,3 +15,13 @@ spring:
     encoding: UTF-8 #编码
     suffix: .html #模板后缀
     mode: HTML #模板
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: isDelete
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+server:
+  port: 8089

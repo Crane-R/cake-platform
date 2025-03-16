@@ -35,6 +35,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
         return selectOne != null;
     }
+
+    @Override
+    public User currentUser(HttpServletRequest request) {
+        Object user = request.getSession().getAttribute("user");
+        if (user == null) {
+            user = new User();
+        }
+        User currentUser = (User) user;
+        currentUser.setUserId(2L);
+        return currentUser;
+    }
 }
 
 
