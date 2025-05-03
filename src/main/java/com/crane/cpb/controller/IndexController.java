@@ -1,9 +1,6 @@
 package com.crane.cpb.controller;
 
-import com.crane.cpb.service.CakeService;
-import com.crane.cpb.service.CakeTagService;
-import com.crane.cpb.service.ShoppingCartService;
-import com.crane.cpb.service.TagService;
+import com.crane.cpb.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +26,8 @@ public class IndexController {
 
     private final CakeTagService cakeTagService;
 
+    private final UserService userService;
+
     /**
      * 跳转至首页
      *
@@ -43,6 +42,7 @@ public class IndexController {
         //获取轮播图数据
         cakeService.setCarouselImage(modelAndView);
         cakeService.setLatestCake(modelAndView);
+        modelAndView.addObject("currentUser",userService.currentUser(request).getUsername());
         return modelAndView;
     }
 
@@ -52,9 +52,10 @@ public class IndexController {
      * @date 2025/3/2 12:13
      **/
     @GetMapping("/jump/{path}")
-    public ModelAndView jump(@PathVariable String path) {
+    public ModelAndView jump(@PathVariable String path, HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName(path);
+        modelAndView.addObject("currentUser",userService.currentUser(request).getUsername());
         return modelAndView;
     }
 

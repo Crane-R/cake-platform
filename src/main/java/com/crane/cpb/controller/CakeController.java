@@ -6,6 +6,7 @@ import com.crane.cpb.model.domain.vo.CakeVo;
 import com.crane.cpb.service.CakeService;
 import com.crane.cpb.service.ShoppingCartService;
 import com.crane.cpb.service.TagService;
+import com.crane.cpb.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -31,6 +32,8 @@ public class CakeController {
     private final ShoppingCartService shoppingCartService;
 
     private final TagService tagService;
+
+    private final UserService userService;
 
     /**
      * 跳转到网格列表
@@ -61,6 +64,7 @@ public class CakeController {
             request.getSession().removeAttribute("addFail");
         }
         tagService.setTagsType(modelAndView);
+        modelAndView.addObject("currentUser",userService.currentUser(request).getUsername());
         return modelAndView;
     }
 
@@ -74,6 +78,7 @@ public class CakeController {
         modelAndView.addObject("cake", cakeService.toVo(byId));
         modelAndView.setViewName("shop_details");
         shoppingCartService.setCartData(request, modelAndView);
+        modelAndView.addObject("currentUser",userService.currentUser(request).getUsername());
         return modelAndView;
     }
 

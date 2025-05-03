@@ -35,10 +35,11 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
     private final CakeService cakeService;
 
     @Override
-    public List<CartItem> userCartList(HttpServletRequest request) {
+    public List<CartItem> userCartList(HttpServletRequest request, int isWish) {
         User user = userService.currentUser(request);
         QueryWrapper<ShoppingCart> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id", user.getUserId());
+        wrapper.eq("is_wish", isWish);
         List<ShoppingCart> shoppingCarts = this.list(wrapper);
         List<CartItem> resultList = new ArrayList<>();
         shoppingCarts.forEach(item -> {
@@ -56,12 +57,24 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
     @Override
     public void setCartData(HttpServletRequest request, ModelAndView modelAndView) {
-        List<CartItem> cartItems = userCartList(request);
+        List<CartItem> cartItems = userCartList(request, 0);
         BigDecimal subtotal = BigDecimal.ZERO;
         for (CartItem cartItem : cartItems) {
             subtotal = subtotal.add(cartItem.getCake().getPrice().multiply(new BigDecimal(cartItem.getNum())));
         }
         modelAndView.addObject("cartItems", cartItems);
+        modelAndView.addObject("subtotal", subtotal);
+        modelAndView.addObject("cartSize", cartItems.size());
+    }
+
+    @Override
+    public void setWishData(HttpServletRequest request, ModelAndView modelAndView) {
+        List<CartItem> cartItems = userCartList(request, 1);
+        BigDecimal subtotal = BigDecimal.ZERO;
+        for (CartItem cartItem : cartItems) {
+            subtotal = subtotal.add(cartItem.getCake().getPrice().multiply(new BigDecimal(cartItem.getNum())));
+        }
+        modelAndView.addObject("wishItems", cartItems);
         modelAndView.addObject("subtotal", subtotal);
         modelAndView.addObject("cartSize", cartItems.size());
     }

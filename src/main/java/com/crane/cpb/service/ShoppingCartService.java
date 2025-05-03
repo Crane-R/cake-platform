@@ -20,11 +20,13 @@ public interface ShoppingCartService extends IService<ShoppingCart> {
      *
      * @date 2025/3/2 15:34
      **/
-    List<CartItem> userCartList(HttpServletRequest request);
+    List<CartItem> userCartList(HttpServletRequest request, int isWish);
 
     /**
      * 获取购物车数据
      **/
     void setCartData(HttpServletRequest request, ModelAndView modelAndView);
+
+    void setWishData(HttpServletRequest request, ModelAndView modelAndView);
 
 }

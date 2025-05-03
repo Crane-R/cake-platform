@@ -21,30 +21,24 @@
                 <div class="col col-md-6">
                     <ul class="header_select_options ul_li">
                         <li>
-                            <div class="select_option">
-                                <div class="flug_wrap">
-                                    <img src="assets/images/flug/flug_uk.png" alt="image_not_found">
-                                </div>
-                                <select>
-                                    <option data-display="Select Option">Select Your Language</option>
-                                    <option value="1" selected>English</option>
-                                    <option value="2">Bangla</option>
-                                    <option value="3" disabled>Arabic</option>
-                                    <option value="4">Hebrew</option>
-                                </select>
-                            </div>
+<!--                            <div class="select_option">-->
+<!--                                <div class="flug_wrap">-->
+<!--                                    <img src="assets/images/flug/flug_uk.png" alt="image_not_found">-->
+<!--                                </div>-->
+<!--                                <select>-->
+<!--                                    <option data-display="Select Option">Select Your Language</option>-->
+<!--                                    <option value="1" selected>English</option>-->
+<!--                                    <option value="2">Bangla</option>-->
+<!--                                    <option value="3" disabled>Arabic</option>-->
+<!--                                    <option value="4">Hebrew</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+                            <span style="color: whitesmoke">智能蛋糕云订服务平台</span>
                         </li>
                         <li>
-                            <div class="select_option">
-                                <h3 class="title_text">当前用户:</h3>
-                                <select>
-                                    <option data-display="Select Option">Select Your Currency</option>
-                                    <option value="united States Dollar" selected>USD</option>
-                                    <option value="Armenian Dram">AMD</option>
-                                    <option value="Australian Dollar" disabled>AUD</option>
-                                    <option value="Austria">EUR</option>
-                                </select>
-                            </div>
+                            <span style="color: whitesmoke" th:if="${currentUser!=null}">当前用户：</span>
+                            <span th:text="${currentUser}" style="color: whitesmoke" th:if="${currentUser!=null}"></span>
+                            <span th:if="${currentUser==null}"><a  style="color: whitesmoke" href="/jump/register">立即登录</a></span>
                         </li>
                     </ul>
                 </div>
@@ -61,7 +55,7 @@
                 <div class="col col-lg-3 col-md-3 col-sm-12">
                     <div class="brand_logo">
                         <a class="brand_link" href="index.html">
-                            <img src="assets/images/logo/logo_1x.png" srcset="assets/images/logo/logo_2x.png 2x"
+                            <img  th:src="@{'/images/logo/smt.png'}" th:srcset="@{'/images/logo/smt.png'}"
                                  alt="logo_not_found">
                         </a>
                     </div>
@@ -151,42 +145,23 @@
                                     </ul>
                                 </li>
                                 <li>
-                                    <a class="nav-link" href="/cake/grid/1">商品</a>
+                                    <a class="nav-link" href="/cake/grid/1">商品列表</a>
                                 </li>
-                                <li class="dropdown">
-                                    <a class="nav-link" href="#" id="blog_submenu" role="button"
-                                       data-bs-toggle="dropdown" aria-expanded="false"> Blog </a>
-                                    <ul class="submenu dropdown-menu" aria-labelledby="blog_submenu">
-                                        <li><a href="blog.html">Blog Standard</a></li>
-                                        <li><a href="blog-left-sidebar.html">Blog Left sidebar</a></li>
-                                        <li><a href="blog-fullwidth.html">Blog Full width</a></li>
-                                        <li><a href="blog_details.html">Blog Details</a></li>
-                                    </ul>
+<!--                                <li>-->
+<!--                                    <a class="nav-link" href="/user/account">个人账户</a>-->
+<!--                                </li>-->
+                                <li>
+                                    <a class="nav-link" href="/jump/register">登录注册</a>
                                 </li>
-                                <li class="dropdown">
-                                    <a class="nav-link" href="#" id="pages_submenu" role="button"
-                                       data-bs-toggle="dropdown" aria-expanded="false"> Pages </a>
-                                    <ul class="submenu dropdown-menu" aria-labelledby="pages_submenu">
-                                        <li><a href="about.html">About Us</a></li>
-                                        <li><a href="team.html">Team</a></li>
-                                        <li><a href="account.html">My Account</a></li>
-                                        <li><a href="register.html">Register</a></li>
-                                        <li class="dropdown">
-                                            <a href="#" id="cart_submenu" role="button" data-bs-toggle="dropdown"
-                                               aria-expanded="false">Shopping Cart</a>
-                                            <ul class="submenu dropdown-menu" aria-labelledby="cart_submenu">
-                                                <li><a href="cart.html">Cart</a></li>
-                                                <li><a href="cart_empty.html">Cart Empty</a></li>
-                                                <li><a href="checkout.html">Checkout</a></li>
-                                                <li><a href="compare.html">Compare</a></li>
-                                                <li><a href="wishlist.html">Wishlist</a></li>
-                                                <li><a href="order_tracking.html">Order Tracking</a></li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="error.html">404 Error</a></li>
-                                    </ul>
+                                <li>
+                                    <a class="nav-link" href="/cart/index">购物车</a>
                                 </li>
-                                <li><a class="nav-link" href="contact.html">Contact Us</a></li>
+                                <li>
+                                    <a class="nav-link" href="/wish/index">心愿单</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="http://127.0.0.1:5173/#/dashboard" target="_blank">进入后台</a>
+                                </li>
                             </ul>
                         </div>
                     </nav>
@@ -197,18 +172,7 @@
                 <div class="col col-md-3">
                     <ul class="header_icons_group ul_li_right">
                         <li>
-                            <a href="contact.html">
-                                <svg role="img" xmlns="http://www.w3.org/2000/svg" width="30px" height="30px"
-                                     viewBox="0 0 24 24" aria-labelledby="locationIconTitle" stroke="#051d43"
-                                     stroke-width="1" stroke-linecap="square" stroke-linejoin="miter" fill="none"
-                                     color="#2329D6"><title id="locationIconTitle">Location</title>
-                                    <path d="M12,21 C16,16.8 18,12.8 18,9 C18,5.6862915 15.3137085,3 12,3 C8.6862915,3 6,5.6862915 6,9 C6,12.8 8,16.8 12,21 Z"/>
-                                    <circle cx="12" cy="9" r="1"/>
-                                </svg>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="compare.html">
+                            <a onclick="window.location.reload()" style="cursor: pointer;">
                                 <svg role="img" xmlns="http://www.w3.org/2000/svg" width="30px" height="30px"
                                      viewBox="0 0 24 24" aria-labelledby="rotateIconTitle" stroke="#051d43"
                                      stroke-width="1" stroke-linecap="square" stroke-linejoin="miter" fill="none"
@@ -223,7 +187,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="wishlist.html">
+                            <a href="/wish/index" style="cursor: pointer;"  >
                                 <svg role="img" xmlns="http://www.w3.org/2000/svg" width="30px" height="30px"
                                      viewBox="0 0 24 24" aria-labelledby="favouriteIconTitle" stroke="#051d43"
                                      stroke-width="1" stroke-linecap="square" stroke-linejoin="miter" fill="none"

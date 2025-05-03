@@ -42,8 +42,7 @@ public class UserController {
         }
         return modelAndView;
     }
-
-
+    
     @PostMapping("/register")
     public ModelAndView register(@RequestParam Map<String, String> params) {
         User user = new User();
@@ -64,7 +63,7 @@ public class UserController {
         Boolean login = userService.login(user, request);
         log.info("login: {}", login);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index");
+        modelAndView.setViewName("redirect:/index");
         return modelAndView;
     }
 

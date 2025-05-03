@@ -1,7 +1,11 @@
 package com.crane.cpb.mapper;
 
-import com.crane.cpb.model.domain.Order;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.crane.cpb.model.domain.Order;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
+import java.util.Map;
 
 /**
 * @author Xanthos
@@ -10,6 +14,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.crane.cpb.model.domain.Order
 */
 public interface OrderMapper extends BaseMapper<Order> {
+
+    @Select("SELECT COUNT(*) as count,  DATE(order_date) AS order_date FROM`order`WHERE DATE(order_date) BETWEEN DATE_SUB(CURDATE(), INTERVAL 6 DAY) AND CURDATE()GROUP BY  DATE(order_date);")
+    List<Map<String, Object>> selectAnalysis();
 
 }
 

@@ -54,6 +54,7 @@ public class CartController {
                 shoppingCart.setCakeId(cakeId);
                 shoppingCart.setUserId(userId);
                 shoppingCart.setQuantity(quantity);
+                shoppingCart.setIsWish(0);
                 shoppingCartService.save(shoppingCart);
             } else {
                 one.setQuantity(one.getQuantity() + quantity);
@@ -87,6 +88,7 @@ public class CartController {
         }
         shoppingCartService.setCartData(request, modelAndView);
         modelAndView.setViewName("cart");
+        modelAndView.addObject("currentUser",userService.currentUser(request).getUsername());
         return modelAndView;
     }
 

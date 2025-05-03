@@ -29,4 +29,6 @@ public class ShoppingCart {
     private Long cakeId;
 
     private Integer quantity;
+
+    private Integer isWish;
 }

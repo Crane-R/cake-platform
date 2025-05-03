@@ -40,7 +40,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
     public Boolean checkout(HttpServletRequest request) {
-        List<CartItem> cartItems = shoppingCartService.userCartList(request);
+        List<CartItem> cartItems = shoppingCartService.userCartList(request,0);
         User user = userService.currentUser(request);
         Long userId = user.getUserId();
         Order order = new Order();

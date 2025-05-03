@@ -389,7 +389,7 @@
                                                 <div class="actions">
                                                     <ul>
                                                         <li>
-                                                            <a href="#">
+                                                            <a href="#"  th:onclick="|addToWish(${cake.cakeId},1)|">
                                                                 <svg
                                                                         role="img"
                                                                         xmlns="http://www.w3.org/2000/svg"
@@ -495,6 +495,16 @@
                                         var flag = [[${addFail}]];
                                         if (!flag) {
                                             alert('添加成功')
+                                        } else {
+                                            alert('添加失败，购物车已满')
+                                        }
+                                    }
+                                    function addToWish(cakeId, quantity) {
+                                        const url = '/wish/addToWish/' + cakeId + '/' + quantity;
+                                        $.get(url)
+                                        var flag = [[${addFail}]];
+                                        if (!flag) {
+                                            alert('成功添加到心愿单')
                                         } else {
                                             alert('添加失败，购物车已满')
                                         }

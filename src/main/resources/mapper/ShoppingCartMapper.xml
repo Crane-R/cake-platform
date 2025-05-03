@@ -9,9 +9,10 @@
             <result property="userId" column="user_id" jdbcType="BIGINT"/>
             <result property="cakeId" column="cake_id" jdbcType="BIGINT"/>
             <result property="quantity" column="quantity" jdbcType="BIGINT"/>
+            <result property="isWish" column="is_wish" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        sc_id,user_id,cake_id,quantity
+        sc_id,user_id,cake_id,quantity,is_wish
     </sql>
 </mapper>

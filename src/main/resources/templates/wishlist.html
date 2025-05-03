@@ -1,0 +1,133 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>心愿单</title>
+    <div th:replace="~{css::css}"></div>
+</head>
+
+
+<body>
+
+    <!-- body_wrap - start -->
+    <div class="body_wrap">
+
+        <div th:replace="~{component::backtotopAndPreload}"></div>
+
+        <div th:replace="~{component::header-style-3}"></div>
+
+        <!-- main body - start
+        ================================================== -->
+        <main>
+
+            <div th:replace="~{component::shopping_cart}"></div>
+
+            <!-- breadcrumb_section - start
+            ================================================== -->
+            <div class="breadcrumb_section">
+                <div class="container">
+                    <ul class="breadcrumb_nav ul_li">
+                        <li><a href="/index">主页</a></li>
+                        <li>心愿单</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- breadcrumb_section - end
+            ================================================== -->
+
+            <!-- cart_section - start
+            ================================================== -->
+            <section class="cart_section section_space">
+                <div class="container">
+                    <div class="cart_table">
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>蛋糕信息</th>
+                                    <th class="text-center">价格</th>
+                                    <th class="text-center">库存状态</th>
+                                    <th class="text-center">添加到购物车</th>
+                                    <th class="text-center">移除</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item:${wishItems}">
+                                    <td>
+                                        <div class="cart_product">
+                                            <img th:src="@{'/cake_imgs/'+${item.cake.attachmentName}}" alt="image_not_found" />
+                                            <h3 th:text="${item.cake.name}">Your Product Title Here</h3>
+                                        </div>
+                                    </td>
+                                    <td class="text-center"><span class="price_text" th:text="'￥'+${item.cake.price}">$10.50</span></td>
+                                    <td class="text-center"><span class="price_text text-success">库存充足</span></td>
+                                    <td class="text-center">
+                                        <a href="#!" class="btn btn_primary" th:onclick="|addToCart(${item.cake.cakeId},1)|">添加</a>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="remove_btn" th:onclick="|removeFromWish(${item.cake.cakeId})|"><i class="fal fa-trash-alt"></i></button>
+                                    </td>
+                                </tr>
+                                <script th:inline="javascript">
+                                    function addToCart(cakeId, quantity) {
+                                        const url = '/cart/addToCart/' + cakeId + '/' + quantity;
+                                        $.get(url)
+                                        var flag = [[${addFail}]];
+                                        if (!flag) {
+                                            alert('添加成功')
+                                        } else {
+                                            alert('添加失败，购物车已满')
+                                        }
+                                    }
+                                    function removeFromWish(cakeId) {
+                                        const url = '/wish/remove/' + cakeId;
+                                        $.get(url)
+                                        window.location.reload();
+                                    }
+                                </script>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <!-- cart_section - end
+            ================================================== -->
+
+            <!-- newsletter_section - start
+            ================================================== -->
+            <section class="newsletter_section">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col col-lg-6">
+                            <h2 class="newsletter_title text-white">Sign Up for Newsletter </h2>
+                            <p>Get E-mail updates about our latest products and special offers.</p>
+                        </div>
+                        <div class="col col-lg-6">
+                            <form action="#!">
+                                <div class="newsletter_form">
+                                    <input type="email" name="email" placeholder="Enter your email address">
+                                    <button type="submit" class="btn btn_secondary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- newsletter_section - end
+            ================================================== -->
+
+        </main>
+        <!-- main body - end
+        ================================================== -->
+
+        <div th:replace="~{component::footer}"></div>
+
+    </div>
+    <!-- body_wrap - end -->
+
+    <div th:replace="~{js::js}"></div>
+    
+</body>
+</html>  
