@@ -37,6 +37,9 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
     @Override
     public List<CartItem> userCartList(HttpServletRequest request, int isWish) {
         User user = userService.currentUser(request);
+        if(user == null) {
+            return new ArrayList<>();
+        }
         QueryWrapper<ShoppingCart> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id", user.getUserId());
         wrapper.eq("is_wish", isWish);

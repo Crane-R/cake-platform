@@ -56,6 +56,7 @@ public class IndexController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName(path);
         modelAndView.addObject("currentUser",userService.currentUser(request).getUsername());
+        shoppingCartService.setCartData(request, modelAndView);
         return modelAndView;
     }
 
