@@ -1,7 +1,9 @@
 package com.crane.cpb.service;
 
-import com.crane.cpb.model.domain.Merchant;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.crane.cpb.model.domain.Merchant;
+
+import java.util.Map;
 
 /**
 * @author Xanthos
@@ -11,5 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface MerchantService extends IService<Merchant> {
 
     boolean removeMerchant(Long userId);
+
+    Boolean saveUpdateMerchant(Map<String, Object> params);
 
 }

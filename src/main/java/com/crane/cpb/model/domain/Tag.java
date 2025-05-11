@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
+ * @author Xanthos
  * @TableName tag
  */
 @TableName(value = "tag")

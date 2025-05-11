@@ -21,29 +21,21 @@
                 <div class="col col-md-6">
                     <ul class="header_select_options ul_li">
                         <li>
-<!--                            <div class="select_option">-->
-<!--                                <div class="flug_wrap">-->
-<!--                                    <img src="assets/images/flug/flug_uk.png" alt="image_not_found">-->
-<!--                                </div>-->
-<!--                                <select>-->
-<!--                                    <option data-display="Select Option">Select Your Language</option>-->
-<!--                                    <option value="1" selected>English</option>-->
-<!--                                    <option value="2">Bangla</option>-->
-<!--                                    <option value="3" disabled>Arabic</option>-->
-<!--                                    <option value="4">Hebrew</option>-->
-<!--                                </select>-->
-<!--                            </div>-->
                             <span style="color: whitesmoke">智能蛋糕云订服务平台</span>
                         </li>
                         <li>
                             <span style="color: whitesmoke" th:if="${currentUser!=null}">当前用户：</span>
                             <span th:text="${currentUser}" style="color: whitesmoke" th:if="${currentUser!=null}"></span>
-                            <span th:if="${currentUser==null}"><a  style="color: whitesmoke" href="/jump/register">立即登录</a></span>
+                            <span th:if="${currentUser==null}"><a style="color: whitesmoke" href="/jump/register">立即登录</a></span>
                         </li>
                     </ul>
                 </div>
                 <div class="col col-md-6">
-                    <p class="header_hotline">联系我们: <strong>+1888 234 5678</strong></p>
+                    <p class="header_hotline">
+                        <span th:if="${currentUser!=null}">
+                            <a style="color: whitesmoke" href="/user/logout">退出登录</a>
+                        </span>
+                    </p>
                 </div>
             </div>
         </div>
@@ -54,7 +46,7 @@
             <div class="row align-items-center">
                 <div class="col col-lg-3 col-md-3 col-sm-12">
                     <div class="brand_logo">
-                        <a class="brand_link" href="index.html">
+                        <a class="brand_link" href="/index">
                             <img  th:src="@{'/images/logo/smt.png'}" th:srcset="@{'/images/logo/smt.png'}"
                                  alt="logo_not_found">
                         </a>
@@ -136,20 +128,10 @@
                                 <i class="fal fa-times"></i>
                             </button>
                             <ul class="main_menu_list ul_li">
-                                <li class="dropdown">
-                                    <a class="nav-link" href="#" id="shop_submenu" role="button"
-                                       data-bs-toggle="dropdown" aria-expanded="false">主页</a>
-                                    <ul class="submenu dropdown-menu" aria-labelledby="shop_submenu">
-                                        <li><a href="/index">主页1</a></li>
-                                        <li><a href="index-2.html">主页2</a></li>
-                                    </ul>
-                                </li>
+                                <li><a class="nav-link" href="/index">主页</a></li>
                                 <li>
                                     <a class="nav-link" href="/cake/grid/1">商品列表</a>
                                 </li>
-<!--                                <li>-->
-<!--                                    <a class="nav-link" href="/user/account">个人账户</a>-->
-<!--                                </li>-->
                                 <li>
                                     <a class="nav-link" href="/jump/register">登录注册</a>
                                 </li>
@@ -225,9 +207,9 @@
                 <div class="col col-lg-4 col-md-6 col-sm-6">
                     <div class="footer_widget footer_about">
                         <div class="brand_logo">
-                            <a class="brand_link" href="index.html">
-                                <img src="../static/images/logo/logo_1x.png"
-                                     srcset="../static/images/logo/logo_2x.png 2x" alt="logo_not_found">
+                            <a class="brand_link" href="/index">
+                                <img  th:src="@{'/images/logo/smt.png'}" th:srcset="@{'/images/logo/smt.png'}"
+                                      alt="logo_not_found">
                             </a>
                         </div>
                         <ul class="social_round ul_li">
@@ -363,4 +345,25 @@
 <!-- sidebar cart - end
 ================================================== -->
 
-<!--模态弹窗-->
+<!-- newsletter_section - start
+================================================== -->
+<section class="newsletter_section" th:fragment="newsletter">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col col-lg-6">
+                <h2 class="newsletter_title text-white">新信息</h2>
+                <p>获取有关我们最新产品和特别优惠的信息。</p>
+            </div>
+            <div class="col col-lg-6">
+                <form action="#!">
+                    <div class="newsletter_form">
+                        <input type="email" name="email" placeholder="输入你的电子邮箱地址">
+                        <button type="submit" class="btn btn_secondary">提交</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- newsletter_section - end
+================================================== -->

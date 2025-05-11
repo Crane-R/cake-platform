@@ -13,4 +13,5 @@ public interface TagService extends IService<Tag> {
 
     void setTagsType(ModelAndView modelAndView);
 
+    Boolean saveTag(Tag tag);
 }

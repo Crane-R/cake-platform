@@ -1,6 +1,7 @@
 package com.crane.cpb.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.crane.cpb.mapper.UserMapper;
 import com.crane.cpb.model.domain.User;
@@ -8,6 +9,7 @@ import com.crane.cpb.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Xanthos
@@ -16,13 +18,17 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl extends ServiceImpl<UserMapper, User>
-        implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     private final UserMapper userMapper;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean register(User user) {
+        int count = userMapper.selectList(Wrappers.<User>lambdaQuery().eq(User::getUsername, user.getUsername())).size();
+        if (count > 0) {
+            return false;
+        }
         return userMapper.insert(user) == 1;
     }
 
@@ -40,11 +46,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public User currentUser(HttpServletRequest request) {
         Object user = request.getSession().getAttribute("user");
         if (user == null) {
-            user = new User();
+            throw new RuntimeException("用户未登录");
         }
-        User currentUser = (User) user;
-        currentUser.setUserId(2L);
-        return currentUser;
+        return (User) user;
+    }
+
+    @Override
+    public void logout(HttpServletRequest request) {
+        request.getSession().removeAttribute("user");
     }
 }
 

@@ -1,7 +1,6 @@
 package com.crane.cpb.controller;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -64,46 +63,8 @@ public class MerchantController {
     }
 
     @PostMapping("/saveOrUpdate")
-    public Boolean add(@RequestBody Map<String, Object> params) {
-        Object username = params.get("username");
-        long counted = userService.count(new QueryWrapper<User>().eq("username", username));
-        if (counted != 0) {
-            return false;
-        }
-        Object password = params.get("password");
-        Object phone = params.get("phone");
-        Object email = params.get("email");
-        Object address = params.get("address");
-        Object name = params.get("name");
-        Object userId = params.get("user_id");
-        Object merchantId = params.get("merchant_id");
-        User user = new User();
-        user.setUserId(Long.valueOf(userId.toString()));
-        user.setUsername(username.toString());
-        user.setPassword(password.toString());
-        if (phone != null) {
-            user.setPhone(phone.toString());
-        }
-        if (email != null) {
-            user.setEmail(email.toString());
-        }
-        user.setIdentity(1);
-        Merchant merchant = new Merchant();
-        merchant.setMerchantId(Long.valueOf(merchantId.toString()));
-        merchant.setCode(RandomUtil.randomString(4));
-        if (name != null) {
-            merchant.setName(name.toString());
-        }
-        if (email != null) {
-            merchant.setContactInfo(email.toString());
-        }
-        if (address != null) {
-            merchant.setAddress(address.toString());
-        }
-        merchantService.saveOrUpdate(merchant);
-        user.setIdentityIndex(merchant.getMerchantId());
-        userService.saveOrUpdate(user);
-        return true;
+    public Boolean saveOrUpdate(@RequestBody Map<String, Object> params) {
+        return merchantService.saveUpdateMerchant(params);
     }
 
     @GetMapping("/delete")

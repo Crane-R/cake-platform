@@ -6,14 +6,16 @@ import com.crane.cpb.mapper.CakeImgMapper;
 import com.crane.cpb.mapper.CakeMapper;
 import com.crane.cpb.mapper.CakeTagMapper;
 import com.crane.cpb.mapper.TagMapper;
-import com.crane.cpb.model.domain.Cake;
-import com.crane.cpb.model.domain.CakeImg;
-import com.crane.cpb.model.domain.CakeTag;
-import com.crane.cpb.model.domain.Tag;
+import com.crane.cpb.model.domain.*;
 import com.crane.cpb.model.domain.vo.CakeVo;
 import com.crane.cpb.service.CakeService;
+import com.crane.cpb.service.CakeTagService;
+import com.crane.cpb.service.MerchantService;
+import com.crane.cpb.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -36,6 +38,9 @@ public class CakeServiceImpl extends ServiceImpl<CakeMapper, Cake>
     private final TagMapper tagMapper;
 
     private final CakeTagMapper cakeTagMapper;
+    private final CakeTagService cakeTagService;
+    private final UserService userService;
+    private final MerchantService merchantService;
 
     @Override
     public List<CakeVo> getCakeVoList() {
@@ -87,6 +92,35 @@ public class CakeServiceImpl extends ServiceImpl<CakeMapper, Cake>
 //
 //        return modelAndView;
 //    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Cake saveCake(Cake cake, HttpServletRequest request) {
+        User user = userService.currentUser(request);
+        if (user.getIdentity() == 0) {
+            throw new RuntimeException("用户无法添加");
+        }
+        Merchant merchant = merchantService.getById(user.getIdentityIndex());
+        cake.setMerchantId(merchant.getMerchantId());
+        boolean cakeSaved = super.saveOrUpdate(cake);
+        if (!cakeSaved) {
+            throw new RuntimeException("保存失败");
+        }
+        List<Long> tagIds = cake.getTagIds();
+        if (tagIds == null) {
+            return cake;
+        }
+        List<CakeTag> addList = new ArrayList<>();
+        for (Long tagId : tagIds) {
+            CakeTag cakeTag = new CakeTag();
+            cakeTag.setTagId(tagId);
+            cakeTag.setCakeId(cake.getCakeId());
+            addList.add(cakeTag);
+        }
+        cakeTagService.saveOrUpdateBatch(addList);
+        return cake;
+    }
+
 }
 
 

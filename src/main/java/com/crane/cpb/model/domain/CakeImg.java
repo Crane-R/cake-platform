@@ -1,6 +1,7 @@
 package com.crane.cpb.model.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -24,6 +25,12 @@ public class CakeImg {
      * 附件名称
      */
     private String attachmentName;
+
+    @TableField(exist = false)
+    private String url;
+
+    @TableField(exist = false)
+    private String name;
 
     /**
      * 

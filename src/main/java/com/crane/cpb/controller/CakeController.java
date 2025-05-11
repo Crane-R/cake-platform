@@ -1,20 +1,31 @@
 package com.crane.cpb.controller;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.crane.cpb.model.domain.Cake;
+import com.crane.cpb.model.domain.CakeImg;
+import com.crane.cpb.model.domain.CakeTag;
 import com.crane.cpb.model.domain.vo.CakeVo;
-import com.crane.cpb.service.CakeService;
-import com.crane.cpb.service.ShoppingCartService;
-import com.crane.cpb.service.TagService;
-import com.crane.cpb.service.UserService;
+import com.crane.cpb.service.*;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * 蛋糕接口
@@ -22,9 +33,10 @@ import org.springframework.web.servlet.ModelAndView;
  * @author Xanthos
  * @date 2025/3/2 12:39
  */
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/cake")
+@CrossOrigin
 public class CakeController {
 
     private final CakeService cakeService;
@@ -34,6 +46,11 @@ public class CakeController {
     private final TagService tagService;
 
     private final UserService userService;
+    private final CakeTagService cakeTagService;
+
+    // 上传目录，会在项目根目录下的static/cake_imgs文件夹
+    private static final String UPLOAD_DIR = "upload_img/";
+    private final CakeImgService cakeImgService;
 
     /**
      * 跳转到网格列表
@@ -45,7 +62,7 @@ public class CakeController {
         if (pageNum < 1) {
             pageNum = 1;
         }
-        Page<Cake> page = cakeService.page(new Page<>(pageNum, 12));
+        Page<Cake> page = cakeService.page(new Page<>(pageNum, 12), Wrappers.<Cake>lambdaQuery().orderByDesc(Cake::getCakeId));
         Page<CakeVo> pageVo = new Page<>();
         BeanUtils.copyProperties(page, pageVo);
         pageVo.setRecords(page.getRecords().stream().map(cakeService::toVo).toList());
@@ -64,7 +81,7 @@ public class CakeController {
             request.getSession().removeAttribute("addFail");
         }
         tagService.setTagsType(modelAndView);
-        modelAndView.addObject("currentUser",userService.currentUser(request).getUsername());
+        modelAndView.addObject("currentUser", userService.currentUser(request).getUsername());
         return modelAndView;
     }
 
@@ -78,8 +95,89 @@ public class CakeController {
         modelAndView.addObject("cake", cakeService.toVo(byId));
         modelAndView.setViewName("shop_details");
         shoppingCartService.setCartData(request, modelAndView);
-        modelAndView.addObject("currentUser",userService.currentUser(request).getUsername());
+        modelAndView.addObject("currentUser", userService.currentUser(request).getUsername());
         return modelAndView;
+    }
+
+    @PostMapping("/api/save")
+    public Cake saveCake(@RequestBody Cake cake, HttpServletRequest request) {
+        return cakeService.saveCake(cake, request);
+    }
+
+    @GetMapping("/page")
+    public Page<Cake> page(@RequestParam int current,
+                           @RequestParam int size,
+                           @RequestParam(required = false) String cakeName) {
+        LambdaQueryWrapper<Cake> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(Cake::getCakeId);
+        if (StrUtil.isNotEmpty(cakeName)) {
+            queryWrapper.like(Cake::getName, cakeName);
+        }
+        return cakeService.page(new Page<>(current, size), queryWrapper);
+    }
+
+    @GetMapping("/getById/{cakeId}")
+    public Cake getById(@PathVariable Long cakeId) {
+        Cake byId = cakeService.getById(cakeId);
+        List<CakeTag> cakeTagList = cakeTagService.list(Wrappers.<CakeTag>lambdaQuery().eq(CakeTag::getCakeId, byId.getCakeId()));
+        byId.setTagIds(cakeTagList.stream().map(CakeTag::getTagId).collect(Collectors.toList()));
+        List<CakeImg> imgList = cakeImgService.list(Wrappers.<CakeImg>lambdaQuery().eq(CakeImg::getCakeId, byId.getCakeId()));
+        imgList.forEach(cakeImg -> {
+            cakeImg.setUrl("http://localhost:8089/" + UPLOAD_DIR + cakeImg.getAttachmentName());
+            cakeImg.setName(cakeImg.getAttachmentName());
+        });
+        byId.setImgList(imgList);
+        return byId;
+    }
+
+    @PostMapping("/api/upload")
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,
+                                        @RequestParam("cakeId") Long cakeId) {
+        try {
+            // 确保上传目录存在
+            File uploadDir = new File(UPLOAD_DIR);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+            // 生成唯一的文件名
+            String originalFilename = file.getOriginalFilename();
+            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            String uniqueFileName = UUID.randomUUID() + fileExtension;
+            // 保存文件
+            Path filePath = Paths.get(UPLOAD_DIR + uniqueFileName);
+            Files.write(filePath, file.getBytes());
+            CakeImg cakeImg = new CakeImg();
+            cakeImg.setCakeId(cakeId);
+            cakeImg.setAttachmentName(uniqueFileName);
+            cakeImgService.save(cakeImg);
+            // 返回文件的访问URL和cakeId
+            String fileUrl = "/cake_imgs/" + uniqueFileName;
+            return ResponseEntity.ok().body(new UploadResponse(fileUrl, cakeId));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("文件上传失败: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("文件上传失败: " + e.getMessage());
+        }
+    }
+
+    // 扩展响应DTO
+    @Data
+    private static class UploadResponse {
+        private String url;
+        private Long cakeId;
+
+        public UploadResponse(String url, Long cakeId) {
+            this.url = url;
+            this.cakeId = cakeId;
+        }
+
+    }
+
+    @GetMapping("/api/delete/{cakeId}")
+    public Boolean deleteCake(@PathVariable Long cakeId) {
+        return cakeService.removeById(cakeId);
     }
 
 }

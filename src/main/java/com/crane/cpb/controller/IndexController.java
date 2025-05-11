@@ -42,7 +42,7 @@ public class IndexController {
         //获取轮播图数据
         cakeService.setCarouselImage(modelAndView);
         cakeService.setLatestCake(modelAndView);
-        modelAndView.addObject("currentUser",userService.currentUser(request).getUsername());
+        modelAndView.addObject("currentUser", userService.currentUser(request).getUsername());
         return modelAndView;
     }
 
@@ -55,7 +55,7 @@ public class IndexController {
     public ModelAndView jump(@PathVariable String path, HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName(path);
-        modelAndView.addObject("currentUser",userService.currentUser(request).getUsername());
+        modelAndView.addObject("currentUser", userService.currentUser(request).getUsername());
         shoppingCartService.setCartData(request, modelAndView);
         return modelAndView;
     }

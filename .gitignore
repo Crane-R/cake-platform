@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 src/main/resources/static/cake_imgs/
+upload_img/
 
 ### STS ###
 .apt_generated

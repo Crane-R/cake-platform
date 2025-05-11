@@ -1,5 +1,6 @@
 package com.crane.cpb.controller;
 
+import cn.hutool.crypto.SecureUtil;
 import com.crane.cpb.model.domain.User;
 import com.crane.cpb.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import java.util.Map;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin
 public class UserController {
 
     private final UserService userService;
@@ -42,16 +44,22 @@ public class UserController {
         }
         return modelAndView;
     }
-    
+
     @PostMapping("/register")
     public ModelAndView register(@RequestParam Map<String, String> params) {
         User user = new User();
         user.setUsername(params.get("username"));
-        user.setPassword(params.get("password"));
+        user.setPassword(SecureUtil.md5(params.get("password")));
         user.setEmail(params.get("email"));
         Boolean register = userService.register(user);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index");
+        if (!register) {
+            modelAndView.addObject("message", "用户名已存在");
+            modelAndView.setViewName("register");
+        } else {
+            modelAndView.addObject("message", "注册成功");
+            modelAndView.setViewName("register");
+        }
         return modelAndView;
     }
 
@@ -59,12 +67,43 @@ public class UserController {
     public ModelAndView login(@RequestParam Map<String, String> params, HttpServletRequest request) {
         User user = new User();
         user.setUsername(params.get("username"));
-        user.setPassword(params.get("password"));
+        user.setPassword(SecureUtil.md5(params.get("password")));
         Boolean login = userService.login(user, request);
-        log.info("login: {}", login);
+        ModelAndView modelAndView = new ModelAndView();
+        if (login) {
+            modelAndView.setViewName("redirect:/index");
+        } else {
+            modelAndView.setViewName("register");
+            modelAndView.addObject("message", "用户名或密码错误");
+        }
+        return modelAndView;
+    }
+
+    @GetMapping("/logout")
+    public ModelAndView logout(HttpServletRequest request) {
+        userService.logout(request);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("redirect:/index");
         return modelAndView;
+    }
+
+    /**
+     * 后台登录
+     **/
+    @GetMapping("/api/backgroundLogin")
+    public Boolean login(@RequestParam String username, @RequestParam String password, HttpServletRequest request) {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(SecureUtil.md5(password));
+        return userService.login(user, request);
+    }
+
+    /**
+     * 后台退出
+     **/
+    @GetMapping("/api/logout")
+    public void backgroundLogout(HttpServletRequest request) {
+        userService.logout(request);
     }
 
 }

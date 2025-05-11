@@ -1,12 +1,22 @@
 spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+      file-size-threshold: 2MB
   datasource:
     url: jdbc:mysql://localhost:3306/cake_platform
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
+  web:
+    resources:
+      static-locations: classpath:/static/,file:${user.dir}/uploads/
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+    static-path-pattern: /**
   application:
     name: cake-platform-backend
   thymeleaf:

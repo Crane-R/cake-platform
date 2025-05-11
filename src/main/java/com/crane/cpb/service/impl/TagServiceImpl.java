@@ -34,6 +34,11 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
         List<Object> tagId = tagMaps.stream().map(e -> e.get("tag_id")).toList();
         modelAndView.addObject("typeList", tagMapper.selectList(new QueryWrapper<Tag>().in("tag_id", tagId)));
     }
+
+    @Override
+    public Boolean saveTag(Tag tag) {
+        return super.saveOrUpdate(tag);
+    }
 }
 
 

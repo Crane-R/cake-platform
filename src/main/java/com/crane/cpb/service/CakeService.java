@@ -3,6 +3,7 @@ package com.crane.cpb.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.crane.cpb.model.domain.Cake;
 import com.crane.cpb.model.domain.vo.CakeVo;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -34,5 +35,7 @@ public interface CakeService extends IService<Cake> {
     void setLatestCake(ModelAndView modelAndView);
 
 //    ModelAndView queryPage(QueryWrapper<Cake> queryWrapper, Integer pageNum, HttpServletRequest request);
+
+    Cake saveCake(Cake cake, HttpServletRequest request);
 
 }
