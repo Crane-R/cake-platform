@@ -1,5 +1,6 @@
 package com.crane.cpb.controller;
 
+import com.crane.cpb.model.domain.User;
 import com.crane.cpb.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -37,12 +38,17 @@ public class IndexController {
     public ModelAndView index(HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("index");
-        shoppingCartService.setCartData(request, modelAndView);
         tagService.setTagsType(modelAndView);
         //获取轮播图数据
         cakeService.setCarouselImage(modelAndView);
         cakeService.setLatestCake(modelAndView);
-        modelAndView.addObject("currentUser", userService.currentUser(request).getUsername());
+        cakeService.setHotCake(modelAndView);
+        tagService.setHotCategory(modelAndView);
+        User user = userService.currentUser(request);
+        if (user != null) {
+            modelAndView.addObject("currentUser", user);
+            shoppingCartService.setCartData(request, modelAndView);
+        }
         return modelAndView;
     }
 
@@ -55,8 +61,11 @@ public class IndexController {
     public ModelAndView jump(@PathVariable String path, HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName(path);
-        modelAndView.addObject("currentUser", userService.currentUser(request).getUsername());
-        shoppingCartService.setCartData(request, modelAndView);
+        User user = userService.currentUser(request);
+        if (user != null) {
+            modelAndView.addObject("currentUser", user);
+            shoppingCartService.setCartData(request, modelAndView);
+        }
         return modelAndView;
     }
 

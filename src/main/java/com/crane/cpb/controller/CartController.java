@@ -80,6 +80,9 @@ public class CartController {
     @GetMapping("/index")
     public ModelAndView jumpToCart(HttpServletRequest request) {
         User user = userService.currentUser(request);
+        if(user == null) {
+            return new ModelAndView("register");
+        }
         long cardCount = shoppingCartService.count(new QueryWrapper<ShoppingCart>().eq("user_id", user.getUserId()));
         ModelAndView modelAndView = new ModelAndView();
         if (cardCount == 0) {
@@ -88,7 +91,7 @@ public class CartController {
         }
         shoppingCartService.setCartData(request, modelAndView);
         modelAndView.setViewName("cart");
-        modelAndView.addObject("currentUser",userService.currentUser(request).getUsername());
+        modelAndView.addObject("currentUser", user);
         return modelAndView;
     }
 

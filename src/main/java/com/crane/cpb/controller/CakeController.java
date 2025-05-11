@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.crane.cpb.model.domain.Cake;
 import com.crane.cpb.model.domain.CakeImg;
 import com.crane.cpb.model.domain.CakeTag;
+import com.crane.cpb.model.domain.User;
 import com.crane.cpb.model.domain.vo.CakeVo;
 import com.crane.cpb.service.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,15 +74,18 @@ public class CakeController {
         //计算pageEnd
         double l = (double) pageVo.getTotal() / pageVo.getSize();
         modelAndView.addObject("pageEnd", Math.ceil(l));
-        //获取购物车数据
-        shoppingCartService.setCartData(request, modelAndView);
         Object flag = request.getSession().getAttribute("addFail");
         if (flag != null) {
             modelAndView.addObject("addFail", flag);
             request.getSession().removeAttribute("addFail");
         }
         tagService.setTagsType(modelAndView);
-        modelAndView.addObject("currentUser", userService.currentUser(request).getUsername());
+        User user = userService.currentUser(request);
+        if (user != null) {
+            modelAndView.addObject("currentUser", user);
+            //获取购物车数据
+            shoppingCartService.setCartData(request, modelAndView);
+        }
         return modelAndView;
     }
 

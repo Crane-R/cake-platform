@@ -14,4 +14,9 @@ public interface TagService extends IService<Tag> {
     void setTagsType(ModelAndView modelAndView);
 
     Boolean saveTag(Tag tag);
+
+    /**
+     * 热卖类别
+     **/
+    void setHotCategory(ModelAndView modelAndView);
 }

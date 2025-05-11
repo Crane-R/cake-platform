@@ -46,7 +46,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public User currentUser(HttpServletRequest request) {
         Object user = request.getSession().getAttribute("user");
         if (user == null) {
-            throw new RuntimeException("用户未登录");
+            return null;
         }
         return (User) user;
     }

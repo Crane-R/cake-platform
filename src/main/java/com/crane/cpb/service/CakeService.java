@@ -34,6 +34,11 @@ public interface CakeService extends IService<Cake> {
      **/
     void setLatestCake(ModelAndView modelAndView);
 
+    /**
+     * 热卖榜单
+     **/
+    void setHotCake(ModelAndView modelAndView);
+    
 //    ModelAndView queryPage(QueryWrapper<Cake> queryWrapper, Integer pageNum, HttpServletRequest request);
 
     Cake saveCake(Cake cake, HttpServletRequest request);

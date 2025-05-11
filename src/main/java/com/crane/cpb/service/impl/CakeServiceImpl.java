@@ -1,25 +1,19 @@
 package com.crane.cpb.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.crane.cpb.mapper.CakeImgMapper;
-import com.crane.cpb.mapper.CakeMapper;
-import com.crane.cpb.mapper.CakeTagMapper;
-import com.crane.cpb.mapper.TagMapper;
+import com.crane.cpb.mapper.*;
 import com.crane.cpb.model.domain.*;
 import com.crane.cpb.model.domain.vo.CakeVo;
-import com.crane.cpb.service.CakeService;
-import com.crane.cpb.service.CakeTagService;
-import com.crane.cpb.service.MerchantService;
-import com.crane.cpb.service.UserService;
+import com.crane.cpb.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Xanthos
@@ -38,9 +32,14 @@ public class CakeServiceImpl extends ServiceImpl<CakeMapper, Cake>
     private final TagMapper tagMapper;
 
     private final CakeTagMapper cakeTagMapper;
+
     private final CakeTagService cakeTagService;
+
     private final UserService userService;
+
     private final MerchantService merchantService;
+
+    private final OrderItemMapper orderItemMapper;
 
     @Override
     public List<CakeVo> getCakeVoList() {
@@ -83,8 +82,20 @@ public class CakeServiceImpl extends ServiceImpl<CakeMapper, Cake>
 
     @Override
     public void setLatestCake(ModelAndView modelAndView) {
-        List<CakeVo> list = this.list(new QueryWrapper<Cake>().orderByAsc("launch_date").last("limit 8")).stream().map(this::toVo).toList();
+        List<CakeVo> list = this.list(new QueryWrapper<Cake>().orderByAsc("launch_date").last("limit 8"))
+                .stream().map(this::toVo).toList();
         modelAndView.addObject("latestCake", list);
+    }
+
+    @Override
+    public void setHotCake(ModelAndView modelAndView) {
+        List<Long> cakeIds = new ArrayList<>();
+        List<Map<String, Object>> hotCake = orderItemMapper.getHotCake();
+        for (Map<String, Object> map : hotCake) {
+            cakeIds.add((Long) map.get("cake_id"));
+        }
+        List<CakeVo> list = this.list(Wrappers.<Cake>lambdaQuery().in(Cake::getCakeId, cakeIds)).stream().map(this::toVo).toList();
+        modelAndView.addObject("hotCake", list);
     }
 
 //    @Override

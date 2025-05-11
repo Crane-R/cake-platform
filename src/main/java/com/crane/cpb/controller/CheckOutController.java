@@ -41,7 +41,7 @@ public class CheckOutController {
         modelAndView.setViewName("checkout");
         shoppingCartService.setCartData(request, modelAndView);
         tagService.setTagsType(modelAndView);
-        modelAndView.addObject("currentUser",userService.currentUser(request).getUsername());
+        modelAndView.addObject("currentUser",user);
         return modelAndView;
     }
 
