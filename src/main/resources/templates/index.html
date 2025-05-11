@@ -28,6 +28,14 @@
         }())
     </script>
 
+    <script>
+        const isOrder = '[[${orderTrue}]]';
+        console.log(isOrder)
+        if (isOrder) {
+            alert('下单成功');
+        }
+    </script>
+
     <!-- main body - start
     ================================================== -->
     <main>
@@ -42,7 +50,7 @@
                     <div class="col-lg-9 offset-lg-3">
                         <div class="main_slider" data-slick='{"arrows": false}'>
                             <div class="slider_item set-bg-image"
-                                 th:data-background="@{'/cake_imgs/'+${cake.attachmentName}}"
+                                 th:data-background="@{'/upload_img/'+${cake.attachmentName}}"
                                  th:each="cake:${carouselImages}">
                                 <div class="slider_content">
                                     <h3 class="small_title" data-animation="fadeInUp2" data-delay=".2s"
@@ -153,11 +161,12 @@
                             <div class="product-area clearfix">
                                 <div class="grid" th:each="cake :${hotCake}">
                                     <div class="product-pic">
-                                        <img th:src="@{'/upload_img/'+${cake.attachmentName}}" style="height: 168px" alt>
+                                        <img th:src="@{'/upload_img/'+${cake.attachmentName}}" style="height: 168px"
+                                             alt>
                                         <div class="actions">
                                             <ul>
                                                 <li>
-                                                    <a href="#">
+                                                    <a th:onclick="|addToWish(${cake.cakeId},1)|">
                                                         <svg role="img" xmlns="http://www.w3.org/2000/svg" width="48px"
                                                              height="48px" viewBox="0 0 24 24" stroke="#2329D6"
                                                              stroke-width="1" stroke-linecap="square"
@@ -168,7 +177,7 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="#">
+                                                    <a th:href="'/cake/showOne/'+${cake.cakeId}">
                                                         <svg role="img" xmlns="http://www.w3.org/2000/svg" width="48px"
                                                              height="48px" viewBox="0 0 24 24" stroke="#2329D6"
                                                              stroke-width="1" stroke-linecap="square"
@@ -181,25 +190,13 @@
                                                         </svg>
                                                     </a>
                                                 </li>
-                                                <li>
-                                                    <a class="quickview_btn" data-bs-toggle="modal"
-                                                       href="#quickview_popup" role="button" tabindex="0">
-                                                        <svg width="48px" height="48px" viewBox="0 0 24 24"
-                                                             xmlns="http://www.w3.org/2000/svg" stroke="#2329D6"
-                                                             stroke-width="1" stroke-linecap="square"
-                                                             stroke-linejoin="miter" fill="none" color="#2329D6"><title>
-                                                            Visible (eye)</title>
-                                                            <path d="M22 12C22 12 19 18 12 18C5 18 2 12 2 12C2 12 5 6 12 6C19 6 22 12 22 12Z"/>
-                                                            <circle cx="12" cy="12" r="3"/>
-                                                        </svg>
-                                                    </a>
-                                                </li>
                                             </ul>
                                         </div>
                                     </div>
                                     <div class="details">
                                         <h4><a href="#" th:text="${cake.name}">Macbook Pro</a></h4>
-                                        <p><a href="#" th:text="${cake.description}">Apple MacBook Pro13.3″ Laptop with new Touch bar ID </a></p>
+                                        <p><a href="#" th:text="${cake.description}">Apple MacBook Pro13.3″ Laptop with
+                                            new Touch bar ID </a></p>
                                         <div class="rating">
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
@@ -211,45 +208,19 @@
                                                 <ins>
                                                     <span class="woocommerce-Price-amount amount">
                                                         <bdi>
-                                                            <span class="woocommerce-Price-currencySymbol" th:text="'￥'+${cake.price}"></span>
+                                                            <span class="woocommerce-Price-currencySymbol"
+                                                                  th:text="'￥'+${cake.price}"></span>
                                                         </bdi>
                                                     </span>
                                                 </ins>
-                                            </span>
-                                        <div class="add-cart-area">
-                                            <button class="add-to-cart"
-                                                    th:onclick="|addToCart(${cake.cakeId},1)|">
-                                                添加到购物车</button>
-                                        </div>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <script th:inline="javascript">
-                            function addToCart(cakeId, quantity) {
-                                const url = '/cart/addToCart/' + cakeId + '/' + quantity;
-                                $.get(url)
-                                var flag = [[${addFail}]];
-                                if (!flag) {
-                                    alert('添加成功')
-                                } else {
-                                    alert('添加失败，购物车已满')
-                                }
-                            }
-                            function addToWish(cakeId, quantity) {
-                                const url = '/wish/addToWish/' + cakeId + '/' + quantity;
-                                $.get(url)
-                                var flag = [[${addFail}]];
-                                if (!flag) {
-                                    alert('成功添加到心愿单')
-                                } else {
-                                    alert('添加失败，购物车已满')
-                                }
-                            }
-                        </script>
                         <div class="top_category_wrap">
                             <div class="sec-title-link">
-                                <h3>热卖类别</h3>
+                                <h3>热门标签</h3>
                             </div>
                             <div class="top_category_carousel2" data-slick='{"dots": false}'>
                                 <div class="slider_item" th:each="tag : ${hotCategory}">
@@ -283,13 +254,14 @@
                                 <div class="vertical_slider_4item" data-slick='{"dots": false}'>
                                     <div class="slider_item" th:each="cake :${latestCake}">
                                         <div class="small_product_layout">
-                                            <a class="item_image" href="shop_details.html">
-                                                <img th:src="@{'/cake_imgs/'+${cake.attachmentName}}"
+                                            <a class="item_image" th:href="'/cake/showOne/'+${cake.cakeId}">
+                                                <img th:src="@{'/upload_img/'+${cake.attachmentName}}"
                                                      alt="image_not_found">
                                             </a>
                                             <div class="item_content">
                                                 <h3 class="item_title">
-                                                    <a href="shop_details.html" th:text="${cake.name}">Product Sample</a>
+                                                    <a href="shop_details.html" th:text="${cake.name}">Product
+                                                        Sample</a>
                                                 </h3>
                                                 <ul class="rating_star ul_li">
                                                     <li>
@@ -316,7 +288,6 @@
         </section>
         <!-- products-with-sidebar-section - end
         ================================================== -->
-        
         <div th:replace="~{component::newsletter}"></div>
     </main>
     <!-- main body - end

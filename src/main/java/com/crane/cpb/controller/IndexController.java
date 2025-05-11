@@ -49,6 +49,11 @@ public class IndexController {
             modelAndView.addObject("currentUser", user);
             shoppingCartService.setCartData(request, modelAndView);
         }
+        Object orderTrue = request.getSession().getAttribute("orderTrue");
+        if (orderTrue != null) {
+            modelAndView.addObject("orderTrue", orderTrue);
+            request.getSession().removeAttribute("orderTrue");
+        }
         return modelAndView;
     }
 

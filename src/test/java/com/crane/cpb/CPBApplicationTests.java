@@ -22,7 +22,7 @@ class CPBApplicationTests {
         // 创建一个PathMatchingResourcePatternResolver实例，用于解析资源模式
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         // 根据指定的路径模式获取资源数组
-        Resource[] resources = resolver.getResources("classpath:static/cake_imgs/*");
+        Resource[] resources = resolver.getResources("classpath:static/upload_img/*");
         String[] fileNames = new String[resources.length];
         for (int i = 0; i < resources.length; i++) {
             // 获取每个资源的文件名

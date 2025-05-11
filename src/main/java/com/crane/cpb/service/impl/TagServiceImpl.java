@@ -36,7 +36,9 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
         //应该只给前几个，不能太多，选出标签数最多的前十个
         List<Map<String, Object>> tagMaps = cakeTagMapper.selectTagListDesc10();
         List<Object> tagId = tagMaps.stream().map(e -> e.get("tag_id")).toList();
-        modelAndView.addObject("typeList", tagMapper.selectList(new QueryWrapper<Tag>().in("tag_id", tagId)));
+        if (!tagId.isEmpty()) {
+            modelAndView.addObject("typeList", tagMapper.selectList(new QueryWrapper<Tag>().in("tag_id", tagId)));
+        }
     }
 
     @Override
@@ -61,11 +63,14 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
                 tagCountMap.put(tagId, tagCountMap.getOrDefault(tagId, 0L) + tagMap.get("sum"));
             }
         }
+        if (tagCountMap.isEmpty()) {
+            return;
+        }
         PriorityQueue<Map.Entry<String, Long>> maxHeap = new PriorityQueue<>((a, b) ->
                 b.getValue().compareTo(a.getValue()));
         maxHeap.addAll(tagCountMap.entrySet());
         List<Tag> tagList = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < (Math.min(maxHeap.size(), 6)); i++) {
             Map.Entry<String, Long> poll = maxHeap.poll();
             assert poll != null;
             tagList.add(tagMapper.selectById(poll.getKey()));

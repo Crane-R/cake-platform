@@ -41,7 +41,11 @@ public class CartController {
         if (quantity <= 0) {
             quantity = 1;
         }
-        Long userId = userService.currentUser(request).getUserId();
+        User user = userService.currentUser(request);
+        if (user == null) {
+            return new ModelAndView("register");
+        }
+        Long userId = user.getUserId();
         //判断购物车商品数量是不是超过50，最大50
         ShoppingCart one = shoppingCartService.getOne(new QueryWrapper<ShoppingCart>().eq("user_id", userId).eq("cake_id", cakeId));
         long cardCount = one == null ? 0 : one.getQuantity();
@@ -58,10 +62,11 @@ public class CartController {
                 shoppingCartService.save(shoppingCart);
             } else {
                 one.setQuantity(one.getQuantity() + quantity);
+                one.setIsWish(0);
                 shoppingCartService.updateById(one);
             }
         }
-        modelAndView.setViewName("redirect:/cake/grid/1");
+        modelAndView.setViewName("redirect:/cake/grid/1/");
         return modelAndView;
     }
 
@@ -80,7 +85,7 @@ public class CartController {
     @GetMapping("/index")
     public ModelAndView jumpToCart(HttpServletRequest request) {
         User user = userService.currentUser(request);
-        if(user == null) {
+        if (user == null) {
             return new ModelAndView("register");
         }
         long cardCount = shoppingCartService.count(new QueryWrapper<ShoppingCart>().eq("user_id", user.getUserId()));

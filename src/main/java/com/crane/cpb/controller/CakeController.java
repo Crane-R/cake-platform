@@ -4,10 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.crane.cpb.model.domain.Cake;
-import com.crane.cpb.model.domain.CakeImg;
-import com.crane.cpb.model.domain.CakeTag;
-import com.crane.cpb.model.domain.User;
+import com.crane.cpb.model.domain.*;
 import com.crane.cpb.model.domain.vo.CakeVo;
 import com.crane.cpb.service.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,7 +46,7 @@ public class CakeController {
     private final UserService userService;
     private final CakeTagService cakeTagService;
 
-    // 上传目录，会在项目根目录下的static/cake_imgs文件夹
+    // 上传目录，会在项目根目录下的static/upload_img文件夹
     private static final String UPLOAD_DIR = "upload_img/";
     private final CakeImgService cakeImgService;
 
@@ -58,12 +55,62 @@ public class CakeController {
      *
      * @date 2025/3/12 19:58
      **/
-    @GetMapping("/grid/{pageNum}")
-    public ModelAndView shopGrid(@PathVariable Integer pageNum, HttpServletRequest request) {
+    @GetMapping("/grid/{pageNum}/{type}")
+    public ModelAndView shopGrid(@PathVariable Integer pageNum, HttpServletRequest request, @PathVariable String type) {
         if (pageNum < 1) {
             pageNum = 1;
         }
-        Page<Cake> page = cakeService.page(new Page<>(pageNum, 12), Wrappers.<Cake>lambdaQuery().orderByDesc(Cake::getCakeId));
+        LambdaQueryWrapper<Cake> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(Cake::getCakeId);
+        if (StrUtil.isNotEmpty(type)) {
+            Long tagId = tagService.getOne(Wrappers.<Tag>lambdaQuery().eq(Tag::getName, type)).getTagId();
+            List<Long> cakeIds = cakeTagService.list(Wrappers.<CakeTag>lambdaQuery().eq(CakeTag::getTagId, tagId))
+                    .stream().map(CakeTag::getCakeId).toList();
+            queryWrapper.in(Cake::getCakeId, cakeIds);
+        }
+        Page<Cake> page = cakeService.page(new Page<>(pageNum, 12), queryWrapper);
+        Page<CakeVo> pageVo = new Page<>();
+        BeanUtils.copyProperties(page, pageVo);
+        pageVo.setRecords(page.getRecords().stream().map(cakeService::toVo).toList());
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("page", pageVo);
+        modelAndView.addObject("currentPageNum", pageNum);
+        modelAndView.setViewName("shop_grid");
+        //计算pageEnd
+        double l = (double) pageVo.getTotal() / pageVo.getSize();
+        modelAndView.addObject("pageEnd", Math.ceil(l));
+        Object flag = request.getSession().getAttribute("addFail");
+        if (flag != null) {
+            modelAndView.addObject("addFail", flag);
+            request.getSession().removeAttribute("addFail");
+        }
+        tagService.setTagsType(modelAndView);
+        User user = userService.currentUser(request);
+        if (user != null) {
+            modelAndView.addObject("currentUser", user);
+            //获取购物车数据
+            shoppingCartService.setCartData(request, modelAndView);
+        }
+        return modelAndView;
+    }
+
+    @GetMapping("/grid/{pageNum}")
+    public ModelAndView shopGrid1(@PathVariable Integer pageNum, HttpServletRequest request, @RequestParam(required = false) String search) {
+        if (pageNum < 1) {
+            pageNum = 1;
+        }
+        LambdaQueryWrapper<Cake> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(Cake::getCakeId);
+        if (StrUtil.isNotEmpty(search)) {
+            queryWrapper.like(Cake::getName, search);
+        }
+        String type = request.getParameter("type");
+        if (StrUtil.isNotEmpty(type)) {
+            List<Long> cakeIds = cakeTagService.list(Wrappers.<CakeTag>lambdaQuery().eq(CakeTag::getTagId, type))
+                    .stream().map(CakeTag::getCakeId).toList();
+            queryWrapper.in(Cake::getCakeId, cakeIds);
+        }
+        Page<Cake> page = cakeService.page(new Page<>(pageNum, 12), queryWrapper);
         Page<CakeVo> pageVo = new Page<>();
         BeanUtils.copyProperties(page, pageVo);
         pageVo.setRecords(page.getRecords().stream().map(cakeService::toVo).toList());
@@ -99,7 +146,12 @@ public class CakeController {
         modelAndView.addObject("cake", cakeService.toVo(byId));
         modelAndView.setViewName("shop_details");
         shoppingCartService.setCartData(request, modelAndView);
-        modelAndView.addObject("currentUser", userService.currentUser(request).getUsername());
+        User user = userService.currentUser(request);
+        if (user != null) {
+            modelAndView.addObject("currentUser", user);
+        } else {
+            return new ModelAndView("register");
+        }
         return modelAndView;
     }
 
@@ -155,7 +207,7 @@ public class CakeController {
             cakeImg.setAttachmentName(uniqueFileName);
             cakeImgService.save(cakeImg);
             // 返回文件的访问URL和cakeId
-            String fileUrl = "/cake_imgs/" + uniqueFileName;
+            String fileUrl = "/upload_img/" + uniqueFileName;
             return ResponseEntity.ok().body(new UploadResponse(fileUrl, cakeId));
         } catch (IOException e) {
             e.printStackTrace();

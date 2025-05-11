@@ -1,10 +1,13 @@
 package com.crane.cpb.service.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.crane.cpb.mapper.UserMapper;
+import com.crane.cpb.model.domain.Customer;
 import com.crane.cpb.model.domain.User;
+import com.crane.cpb.service.CustomerService;
 import com.crane.cpb.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     private final UserMapper userMapper;
+    private final CustomerService customerService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -29,7 +33,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (count > 0) {
             return false;
         }
-        return userMapper.insert(user) == 1;
+        //用户成功注册后新增顾客
+        Customer customer = new Customer();
+        customer.setNickname(user.getUsername());
+        customer.setAge(RandomUtil.randomInt(1, 100));
+        customer.setGender(RandomUtil.randomInt(0, 2));
+        boolean saved = customerService.save(customer);
+        user.setIdentityIndex(customer.getCustomerId());
+        user.setIdentity(0);
+        int insert = userMapper.insert(user);
+        return saved && insert > 0;
     }
 
     @Override

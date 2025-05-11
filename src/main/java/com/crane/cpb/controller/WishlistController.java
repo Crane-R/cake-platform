@@ -32,9 +32,12 @@ public class WishlistController {
     public ModelAndView toWishlist(HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
         User user = userService.currentUser(request);
+        if (user == null) {
+            return new ModelAndView("register");
+        }
         shoppingCartService.setWishData(request, modelAndView);
         modelAndView.setViewName("wishlist");
-        modelAndView.addObject("currentUser",userService.currentUser(request).getUsername());
+        modelAndView.addObject("currentUser", user);
         return modelAndView;
     }
 
@@ -59,7 +62,7 @@ public class WishlistController {
                 .eq("user_id", userId)
                 .eq("cake_id", cakeId)
                 .eq("is_wish", 1));
-        return new ModelAndView("redirect:/cart/index");
+        return new ModelAndView("redirect:/wish/index");
     }
 
 }

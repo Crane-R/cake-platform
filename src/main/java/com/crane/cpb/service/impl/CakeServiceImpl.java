@@ -75,8 +75,9 @@ public class CakeServiceImpl extends ServiceImpl<CakeMapper, Cake>
 
     @Override
     public void setCarouselImage(ModelAndView modelAndView) {
-        //todo：应该是根据订单量获取订单量最高的前三个
-        List<CakeVo> list = list(new QueryWrapper<Cake>().last("limit 5")).stream().map(this::toVo).toList();
+        List<Long> cakeIds = orderItemMapper.select5Cake().stream().map(m ->
+                Long.parseLong(m.get("cake_id").toString())).toList();
+        List<CakeVo> list = list(new QueryWrapper<Cake>().in("cake_id", cakeIds)).stream().map(this::toVo).toList();
         modelAndView.addObject("carouselImages", list);
     }
 

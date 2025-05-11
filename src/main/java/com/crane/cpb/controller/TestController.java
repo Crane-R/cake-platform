@@ -111,7 +111,7 @@ public class TestController {
         // 根据指定的路径模式获取资源数组
         Resource[] resources;
         try {
-            resources = resolver.getResources("classpath:static/cake_imgs/*");
+            resources = resolver.getResources("classpath:static/upload_img/*");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

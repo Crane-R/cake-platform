@@ -189,13 +189,13 @@
                         <div class="product_details_image">
                             <div class="details_image_carousel">
                                 <div class="slider_item" th:each="image : ${cake.cakeImgList}">
-                                    <img th:src="@{'/cake_imgs/'+${image.attachmentName}}" alt="image_not_found">
+                                    <img th:src="@{'/upload_img/'+${image.attachmentName}}" alt="image_not_found">
                                 </div>
                             </div>
 
                             <div class="details_image_carousel_nav">
                                 <div class="slider_item" th:each="image : ${cake.cakeImgList}">
-                                    <img th:src="@{'/cake_imgs/'+${image.attachmentName}}" alt="image_not_found">
+                                    <img th:src="@{'/upload_img/'+${image.attachmentName}}" alt="image_not_found">
                                 </div>
                             </div>
                         </div>
@@ -838,36 +838,11 @@
         </section>
         <!-- related_products_section - end
         ================================================== -->
-
-        <!-- newsletter_section - start
-        ================================================== -->
-        <section class="newsletter_section">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col col-lg-6">
-                        <h2 class="newsletter_title text-white">Sign Up for Newsletter </h2>
-                        <p>Get E-mail updates about our latest products and special offers.</p>
-                    </div>
-                    <div class="col col-lg-6">
-                        <form action="#!">
-                            <div class="newsletter_form">
-                                <input type="email" name="email" placeholder="Enter your email address">
-                                <button type="submit" class="btn btn_secondary">Submit</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- newsletter_section - end
-        ================================================== -->
-
+        <div th:replace="~{component::newsletter}"></div>
     </main>
     <!-- main body - end
     ================================================== -->
-
     <div th:replace="~{component::footer}"></div>
-
 </div>
 <!-- body_wrap - end -->
 
