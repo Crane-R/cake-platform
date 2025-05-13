@@ -30,7 +30,7 @@ public interface CakeService extends IService<Cake> {
     void setCarouselImage(ModelAndView modelAndView);
 
     /**
-     * 获取最新推出的蛋糕
+     * 获取最新推出的蛋糕 - 最新产品
      **/
     void setLatestCake(ModelAndView modelAndView);
 
@@ -38,8 +38,6 @@ public interface CakeService extends IService<Cake> {
      * 热卖榜单
      **/
     void setHotCake(ModelAndView modelAndView);
-    
-//    ModelAndView queryPage(QueryWrapper<Cake> queryWrapper, Integer pageNum, HttpServletRequest request);
 
     Cake saveCake(Cake cake, HttpServletRequest request);
 

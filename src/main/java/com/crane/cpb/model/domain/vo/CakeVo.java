@@ -35,4 +35,6 @@ public class CakeVo {
 
     private Date launchDate;
 
+    private String merchantName;
+
 }

@@ -47,7 +47,8 @@ public class CartController {
         }
         Long userId = user.getUserId();
         //判断购物车商品数量是不是超过50，最大50
-        ShoppingCart one = shoppingCartService.getOne(new QueryWrapper<ShoppingCart>().eq("user_id", userId).eq("cake_id", cakeId));
+        ShoppingCart one = shoppingCartService.getOne(new QueryWrapper<ShoppingCart>()
+                .eq("user_id", userId).eq("cake_id", cakeId).eq("is_wish", 0));
         long cardCount = one == null ? 0 : one.getQuantity();
         ModelAndView modelAndView = new ModelAndView();
         if (cardCount >= 50) {

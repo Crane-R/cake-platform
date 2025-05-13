@@ -6,17 +6,23 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
     <title>登录/注册</title>
+    <link rel="shortcut icon" th:href="@{/images/logo/favourite_icon_1.png}">
     <div th:replace="~{css::css}"></div>
 </head>
 
+<div th:replace="~{messageStyle::messageStyle}"></div>
+
 <body>
 
-<script>
-    const message = '[[${message}]]';
-    if (message && message !== '') {
-        alert(message);
-    }
-</script>
+<!-- 现代化弹窗 -->
+<div id="modernAlert" class="modern-alert" role="alert">
+    <span class="alert-icon" id="alertIcon">✓</span>
+    <div class="alert-content" id="alertMessage">操作成功！这是一个示例消息。</div>
+    <button type="button" class="btn-close" aria-label="Close"></button>
+</div>
+
+<div id="serverMessage" th:if="${message}" th:attr="data-message=${message}, data-type=${messageType ?: 'success'}" style="display: none;"></div>
+
 
 <!-- body_wrap - start -->
 <div class="body_wrap">

@@ -13,11 +13,12 @@
             <result property="identity" column="identity" jdbcType="INTEGER"/>
             <result property="identityIndex" column="identity_index" jdbcType="BIGINT"/>
             <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+            <result property="balance" column="balance" jdbcType="NUMERIC"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         user_id,username,password,
         phone,email,identity,
-        identity_index,is_delete
+        identity_index,is_delete,balance
     </sql>
 </mapper>

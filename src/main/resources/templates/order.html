@@ -4,11 +4,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>心愿单</title>
+    <title>我的订单</title>
     <link rel="shortcut icon" th:href="@{/images/logo/favourite_icon_1.png}">
     <div th:replace="~{css::css}"></div>
 </head>
+<div th:replace="~{messageStyle::messageStyle}"></div>
 <body>
+
+<!-- 现代化弹窗 -->
+<div id="modernAlert" class="modern-alert" role="alert">
+    <span class="alert-icon" id="alertIcon">✓</span>
+    <div class="alert-content" id="alertMessage">操作成功！这是一个示例消息。</div>
+    <button type="button" class="btn-close" aria-label="Close"></button>
+</div>
+
+<div id="serverMessage" th:if="${message}" th:attr="data-message=${message}, data-type=${messageType ?: 'success'}"
+     style="display: none;"></div>
+
 <!-- body_wrap - start -->
 <div class="body_wrap">
     <div th:replace="~{component::backtotopAndPreload}"></div>
@@ -37,33 +49,30 @@
                     <table class="table mb-0">
                         <thead>
                         <tr>
-                            <th>蛋糕信息</th>
-                            <th class="text-center">价格</th>
-                            <th class="text-center">库存状态</th>
-                            <th class="text-center">添加到购物车</th>
-                            <th class="text-center">移除</th>
+                            <th>订单编号</th>
+                            <th class="text-center">蛋糕</th>
+                            <th class="text-center" style="width: 200px">总共价格</th>
+                            <th class="text-center">地址</th>
+                            <th class="text-center" style="width: 150px">状态</th>
+                            <th class="text-center">下单日期</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="item:${wishItems}">
+                        <tr th:each="order:${orderList}">
                             <td>
                                 <div class="cart_product">
-                                    <img th:src="@{'/upload_img/'+${item.cake.attachmentName}}" alt="image_not_found"/>
-                                    <h3 th:text="${item.cake.name}">Your Product Title Here</h3>
+                                    <h3 th:text="${order.orderId}"></h3>
                                 </div>
                             </td>
-                            <td class="text-center"><span class="price_text"
-                                                          th:text="'￥'+${item.cake.price}">$10.50</span></td>
-                            <td class="text-center"><span class="price_text text-success">库存充足</span></td>
-                            <td class="text-center">
-                                <a href="#!" class="btn btn_primary"
-                                   th:onclick="|addToCart(${item.cake.cakeId},1)|">添加</a>
-                            </td>
-                            <td class="text-center">
-                                <button type="button" class="remove_btn"
-                                        th:onclick="|removeFromWish(${item.cake.cakeId})|"><i
-                                        class="fal fa-trash-alt"></i></button>
-                            </td>
+                            <td class="text-center"><span
+                                    th:utext="${order.orderItems}"></span></td>
+                            <td class="text-center"><span class="price_text text-success"
+                                                          th:text="'￥'+${order.totalPrice}"></span></td>
+                            <td class="text-center"><span
+                                    th:text="${order.address}"></span></td>
+                            <td class="price_text text-success text-center"><span
+                                    th:text="${order.orderStatus}"></span></td>
+                            <td class="text-center"><span class="price_text" th:text="${order.orderDate}"></span></td>
                         </tr>
                         <script th:inline="javascript">
                             function addToCart(cakeId, quantity) {

@@ -61,8 +61,9 @@
                             <div class="select_option mb-0 clearfix">
                                 <select name="type">
                                     <option data-display="类别">选择类别</option>
-                                    <option th:value="${type.tagId}" name="typeId" th:each="type:${typeList}" th:text="${type.name}">
-                                        
+                                    <option th:value="${type.tagId}" name="typeId" th:each="type:${typeList}"
+                                            th:text="${type.name}">
+
                                     </option>
                                 </select>
                             </div>
@@ -131,7 +132,7 @@
                             <button type="button" class="offcanvas_close">
                                 <i class="fal fa-times"></i>
                             </button>
-                            <ul class="main_menu_list ul_li">
+                            <ul class="main_menu_list ul_li" style="width: 610px">
                                 <li><a class="nav-link" href="/index">主页</a></li>
                                 <li>
                                     <a class="nav-link" href="/cake/grid/1">商品列表</a>
@@ -145,8 +146,11 @@
                                 <li>
                                     <a class="nav-link" href="/wish/index">心愿单</a>
                                 </li>
+                                <li>
+                                    <a class="nav-link" href="/order/index">我的订单</a>
+                                </li>
                                 <li th:if="${currentUser != null and currentUser.identity != 0}">
-                                    <a class="nav-link" href="http://127.0.0.1:5173/#/dashboard"
+                                    <a class="nav-link" href="http://127.0.0.1:5173/#/login"
                                        target="_blank">进入后台</a>
                                 </li>
                             </ul>
@@ -184,7 +188,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="account.html">
+                            <a href="/user/account">
                                 <svg role="img" xmlns="http://www.w3.org/2000/svg" width="30px" height="30px"
                                      viewBox="0 0 24 24" aria-labelledby="personIconTitle" stroke="#051d43"
                                      stroke-width="1" stroke-linecap="square" stroke-linejoin="miter" fill="none"

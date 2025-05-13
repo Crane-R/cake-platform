@@ -1,7 +1,8 @@
 package com.crane.cpb.service;
 
-import com.crane.cpb.model.domain.Admin;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.crane.cpb.model.domain.Admin;
+import com.crane.cpb.model.domain.User;
 
 /**
 * @author Xanthos
@@ -9,5 +10,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2025-02-12 14:27:56
 */
 public interface AdminService extends IService<Admin> {
+
+    Admin saveAdmin(User user);
+
+    Boolean removeAdmin(Long userId);
 
 }

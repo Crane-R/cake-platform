@@ -4,44 +4,41 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-
-    <title th:text="${title}"></title>
-
+    <title>智能蛋糕云订服务平台</title>
+    <link rel="shortcut icon" th:href="@{/images/logo/favourite_icon_1.png}">
     <div th:replace="~{css::css}"></div>
-
     <!-- woocommercen - css include -->
     <link rel="stylesheet" type="text/css" href="../static/css/woocommerce.css" th:href="@{/css/woocommerce.css}">
 </head>
 
+<div th:replace="~{messageStyle::messageStyle}"></div>
+
 <body>
+
+<!-- 现代化弹窗 -->
+<div id="modernAlert" class="modern-alert" role="alert">
+    <span class="alert-icon" id="alertIcon">✓</span>
+    <div class="alert-content" id="alertMessage">操作成功！这是一个示例消息。</div>
+    <button type="button" class="btn-close" aria-label="Close"></button>
+</div>
+
+<div id="serverMessage" th:if="${message}" th:attr="data-message=${message}, data-type=${messageType ?: 'success'}" style="display: none;"></div>
+
 
 <!-- body_wrap - start -->
 <div class="body_wrap">
-
     <div th:replace="~{component::backtotopAndPreload}"></div>
-
     <div th:replace="~{component::header-style-3}"></div>
-
     <script th:inline="javascript">
         (function () {
             document.getElementById("allcategories_collapse").classList.remove('collapse')
         }())
     </script>
-
-    <script>
-        const isOrder = '[[${orderTrue}]]';
-        console.log(isOrder)
-        if (isOrder) {
-            alert('下单成功');
-        }
-    </script>
-
     <!-- main body - start
     ================================================== -->
     <main>
 
         <div th:replace="~{component::shopping_cart}"></div>
-
         <!-- slider_section - start
         ================================================== -->
         <section class="slider_section">
@@ -54,7 +51,7 @@
                                  th:each="cake:${carouselImages}">
                                 <div class="slider_content">
                                     <h3 class="small_title" data-animation="fadeInUp2" data-delay=".2s"
-                                        th:each="tag:${cake.tagList}"><span th:text="${tag.name}"></span></h3>
+                                        th:each="tag:${cake.tagList}"><span th:text="${tag?.name}"></span></h3>
                                     <h4 class="big_title" data-animation="fadeInUp2" data-delay=".4s">
                                         <span1
                                                 th:text="${cake.name}">Smart blood
@@ -195,7 +192,8 @@
                                     </div>
                                     <div class="details">
                                         <h4><a href="#" th:text="${cake.name}">Macbook Pro</a></h4>
-                                        <p><a href="#" th:text="${cake.description}">Apple MacBook Pro13.3″ Laptop with
+                                        <p><a href="#" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis !important;
+                                            width: 220px;" th:text="${cake.description}">Apple MacBook Pro13.3″ Laptop with
                                             new Touch bar ID </a></p>
                                         <div class="rating">
                                             <i class="fas fa-star"></i>
@@ -225,8 +223,8 @@
                             <div class="top_category_carousel2" data-slick='{"dots": false}'>
                                 <div class="slider_item" th:each="tag : ${hotCategory}">
                                     <div class="category_boxed">
-                                        <a href="#!">
-                                            <span class="item_title" th:text="${tag.name}">Men's Watches</span>
+                                        <a th:href="'/cake/grid/1/'+${tag?.name}">
+                                            <span class="item_title" th:text="${tag?.name}"></span>
                                         </a>
                                     </div>
                                 </div>
@@ -295,6 +293,6 @@
     <div th:replace="~{component::footer}"></div>
 </div>
 <!-- body_wrap - end -->
-<div th:include="~{js::js}"></div>
+<div th:replace="~{js::js}"></div>
 </body>
 </html>

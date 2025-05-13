@@ -1,0 +1,59 @@
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<style th:fragment="messageStyle">
+  /* 现代化弹窗样式 */
+  .modern-alert {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99999;
+    min-width: 300px;
+    max-width: 90%;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    display: flex;
+    align-items: center;
+    border: none;
+  }
+  .modern-alert.show {
+    top: 24px;
+    opacity: 1;
+  }
+  /* 成功样式 - 改为蓝色系 */
+  .modern-alert.success {
+    background: #f0f7ff;
+    color: #1a73e8;
+    border-left: 4px solid #1a73e8;
+  }
+  /* 错误样式 */
+  .modern-alert.error {
+    background: #fff0f0;
+    color: #d32f2f;
+    border-left: 4px solid #d32f2f;
+  }
+  /* 警告样式 */
+  .modern-alert.warning {
+    background: #fff8e1;
+    color: #ff9800;
+    border-left: 4px solid #ff9800;
+  }
+  .modern-alert .alert-icon {
+    margin-right: 12px;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  .modern-alert .alert-content {
+    flex: 1;
+  }
+  .modern-alert .btn-close {
+    margin-left: 16px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  .modern-alert .btn-close:hover {
+    opacity: 1;
+  }
+</style>

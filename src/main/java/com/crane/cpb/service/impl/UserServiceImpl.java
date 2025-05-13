@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author Xanthos
@@ -46,13 +47,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Boolean login(User user, HttpServletRequest request) {
+    public User login(User user, HttpServletRequest request) {
         User selectOne = userMapper.selectOne(new QueryWrapper<User>()
                 .eq("username", user.getUsername()).eq("password", user.getPassword()));
         if (selectOne != null) {
             request.getSession().setAttribute("user", selectOne);
         }
-        return selectOne != null;
+        return selectOne;
     }
 
     @Override
@@ -67,6 +68,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public void logout(HttpServletRequest request) {
         request.getSession().removeAttribute("user");
+    }
+
+    @Override
+    public void setAccountData(User user, ModelAndView modelAndView) {
+        switch (user.getIdentity()) {
+            case 0:
+                user.setIdentityName("顾客");
+                break;
+            case 1:
+                user.setIdentityName("商家");
+                break;
+            case 2:
+                user.setIdentityName("管理员");
+                break;
+        }
+        modelAndView.addObject("user", user);
     }
 }
 

@@ -7,6 +7,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
     <title>购物车</title>
+    <link rel="shortcut icon" th:href="@{/images/logo/favourite_icon_1.png}">
     <div th:replace="~{css::css}"></div>
 
 </head>
@@ -107,11 +108,7 @@
                         <div class="col col-lg-6">
                             <form action="#">
                                 <div class="coupon_form form_item mb-0">
-                                    <input type="text" name="coupon" placeholder="Coupon Code...">
-                                    <button type="submit" class="btn btn_dark">申请优惠</button>
                                     <div class="info_icon">
-                                        <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top"
-                                           title="Your Info Here"></i>
                                     </div>
                                 </div>
                             </form>
@@ -127,39 +124,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col col-lg-6">
-                        <div class="calculate_shipping">
-                            <h3 class="wrap_title">计算运费<span class="icon"><i class="far fa-arrow-up"></i></span>
-                            </h3>
-                            <form action="#">
-                                <div class="select_option clearfix">
-                                    <select>
-                                        <option data-display="Select Your Currency">选择你的地区</option>
-                                        <option value="1" selected>United Kingdom (UK)</option>
-                                        <option value="2">United Kingdom (UK)</option>
-                                        <option value="3">United Kingdom (UK)</option>
-                                        <option value="4">United Kingdom (UK)</option>
-                                        <option value="5">United Kingdom (UK)</option>
-                                    </select>
-                                </div>
-                                <div class="row">
-                                    <div class="col col-md-6">
-                                        <div class="form_item">
-                                            <input type="text" name="location" placeholder="State / Country">
-                                        </div>
-                                    </div>
-                                    <div class="col col-md-6">
-                                        <div class="form_item">
-                                            <input type="text" name="postalcode" placeholder="Postcode / ZIP">
-                                        </div>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn_primary rounded-pill">Update Total</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="col col-lg-6">
+                    <div class="col col-lg-12">
                         <div class="cart_total_table">
                             <h3 class="wrap_title">购物车总计</h3>
                             <ul class="ul_li_block">

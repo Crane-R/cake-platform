@@ -33,6 +33,8 @@ public class Order implements Serializable {
      */
     private BigDecimal totalPrice;
 
+    private String address;
+
     /**
      * 状态，0进行中1已完成（收货了）
      */

@@ -6,6 +6,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
     <title>蛋糕浏览 - 网格视图</title>
+    <link rel="shortcut icon" th:href="@{/images/logo/favourite_icon_1.png}">
     <div th:replace="~{css::css}"></div>
 </head>
 <style>
@@ -13,22 +14,29 @@
         cursor: pointer;
     }
 </style>
+
+<div th:replace="~{messageStyle::messageStyle}"></div>
+
 <body>
+
+<!-- 现代化弹窗 -->
+<div id="modernAlert" class="modern-alert" role="alert">
+    <span class="alert-icon" id="alertIcon">✓</span>
+    <div class="alert-content" id="alertMessage">操作成功！这是一个示例消息。</div>
+    <button type="button" class="btn-close" aria-label="Close"></button>
+</div>
+
+<div id="serverMessage" th:if="${message}" th:attr="data-message=${message}, data-type=${messageType ?: 'success'}"
+     style="display: none;"></div>
 
 <!-- body_wrap - start -->
 <div class="body_wrap">
-
     <div th:replace="~{component::backtotopAndPreload}"></div>
-
     <div th:replace="~{component::header-style-3}"></div>
-
-
     <!-- main body - start
     ================================================== -->
     <main>
-
         <div th:replace="~{component::shopping_cart}"></div>
-
         <!-- product quick view modal - start
         ================================================== -->
         <div class="modal fade" th:id="'quickview_popup_'+${cakeStat.index}" th:each="cake : ${page.records}"
@@ -114,7 +122,8 @@
 
                                             <ul class="default_btns_group ul_li">
                                                 <li>
-                                                    <a class="addtocart_btn mouse_point" th:onclick="|addToCartQuantity(${cake.cakeId},${cakeStat.index})|">添加到购物车</a>
+                                                    <a class="addtocart_btn mouse_point"
+                                                       th:onclick="|addToCartQuantity(${cake.cakeId},${cakeStat.index})|">添加到购物车</a>
                                                 </li>
                                                 <li>
                                                     <a class="addtocart_btn" th:href="'/cake/showOne/'+${cake.cakeId}">跳转详情</a>
@@ -148,7 +157,6 @@
         </div>
         <!-- product quick view modal - end
         ================================================== -->
-
         <!-- breadcrumb_section - start
         ================================================== -->
         <div class="breadcrumb_section">
@@ -161,7 +169,6 @@
         </div>
         <!-- breadcrumb_section - end
         ================================================== -->
-
         <!-- product_section - start
         ================================================== -->
         <section class="product_section section_space">
@@ -217,10 +224,12 @@
                                 </div>
 
                                 <div class="col col-md-4">
-                                    <div class="result_text">显示<span
+                                    <div class="result_text" th:if="${page.total != 0}">显示<span
                                             th:text="(${page.size * (page.current - 1) +1})"></span>-<span
                                             th:text="${(page.size * (page.current -  1) + page.records.size())}"></span>条，共<span
                                             th:text="${page.total}"></span>条结果
+                                    </div>
+                                    <div class="result_text" th:if="${page.total == 0}">共0条结果
                                     </div>
                                 </div>
                             </div>
@@ -239,7 +248,7 @@
                                                 <div class="actions">
                                                     <ul>
                                                         <li>
-                                                            <a href="#"  th:onclick="|addToWish(${cake.cakeId},1)|">
+                                                            <a href="#" th:onclick="|addToWish(${cake.cakeId},1)|">
                                                                 <svg
                                                                         role="img"
                                                                         xmlns="http://www.w3.org/2000/svg"
@@ -309,8 +318,10 @@
                                                 </div>
                                             </div>
                                             <div class="details">
-                                                <h4><a href="#" th:text="${cake.name}">Macbook Pro</a></h4>
-                                                <p><a href="#" th:text="${cake.description}">Apple MacBook Pro13.3″
+                                                <h4><a href="#" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis !important;
+                                            width: 220px;" th:text="${cake.name}">Macbook Pro</a></h4>
+                                                <p><a style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis !important;
+                                            width: 220px;" href="#" th:text="${cake.description}">Apple MacBook Pro13.3″
                                                     Laptop with Touch ID </a></p>
                                                 <div class="rating">
                                                     <i class="fas fa-star"></i>
@@ -331,7 +342,8 @@
                                                 <div class="add-cart-area">
                                                     <button class="add-to-cart"
                                                             th:onclick="|addToCart(${cake.cakeId},1)|">
-                                                        添加到购物车</button>
+                                                        添加到购物车
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -344,24 +356,25 @@
                                         $.get(url)
                                         var flag = [[${addFail}]];
                                         if (!flag) {
-                                            alert('添加成功')
+                                            showModernAlert('添加成功')
                                         } else {
-                                            alert('添加失败，购物车已满')
+                                            showModernAlert('添加失败，购物车已满')
                                         }
                                     }
+
                                     function addToWish(cakeId, quantity) {
                                         const url = '/wish/addToWish/' + cakeId + '/' + quantity;
                                         $.get(url)
                                         var flag = [[${addFail}]];
                                         if (!flag) {
-                                            alert('成功添加到心愿单')
+                                            showModernAlert('成功添加到心愿单')
                                         } else {
-                                            alert('添加失败，购物车已满')
+                                            showModernAlert('添加失败')
                                         }
                                     }
                                 </script>
                                 <div class="pagination_wrap">
-                                    <ul class="pagination_nav">
+                                    <ul class="pagination_nav" th:if="${pageEnd>0}">
                                         <li th:each="pageNum:${#numbers.sequence(1,pageEnd)}"
                                             th:classappend="${pageNum == currentPageNum}?'active'">
                                             <a th:href="'/cake/grid/'+${pageNum}" th:text="${pageNum}"></a></li>
@@ -380,7 +393,8 @@
                                     <div class="product-area-row">
                                         <div class="grid clearfix" th:each="cake : ${page.records}">
                                             <div class="product-pic">
-                                                <img th:src="@{'/upload_img/'+${cake.attachmentName}}" alt="找不到图片"/>
+                                                <img th:src="@{'/upload_img/'+${cake.attachmentName}}"
+                                                     alt="找不到图片"/>
                                                 <div class="actions">
                                                     <ul>
                                                         <li>
@@ -911,5 +925,6 @@
 </div>
 <!-- body_wrap - end -->
 <div th:replace="~{js::js}"></div>
+
 </body>
 </html>  

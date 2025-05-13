@@ -9,6 +9,7 @@ import com.crane.cpb.service.CakeImgService;
 import com.crane.cpb.service.CakeService;
 import com.crane.cpb.service.CakeTagService;
 import com.crane.cpb.service.TagService;
+import com.crane.cpb.util.CakeGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -73,13 +74,13 @@ public class TestController {
         int count = 0;
         for (int i = 0; i < num; i++) {
             Cake cake = new Cake();
-            cake.setName(RandomUtil.randomString(6));
-            cake.setDescription(RandomUtil.randomString(10));
-            cake.setPrice(RandomUtil.randomBigDecimal(new BigDecimal(100), new BigDecimal(1000)));
+            cake.setName(CakeGenerator.generateCakeName());
+            cake.setDescription(CakeGenerator.generateCakeDescription());
+            cake.setPrice(BigDecimal.valueOf(CakeGenerator.generateCakePrice()));
             cake.setMerchantId(-1L);
             cakeService.save(cake);
             //添加蛋糕图片
-            int imgCount = RandomUtil.randomInt(1, 9);
+            int imgCount = 4;
             for (int j = 0; j < imgCount; j++) {
                 String cakeImgName = getCakeImgName();
                 CakeImg cakeImg = new CakeImg();
@@ -106,16 +107,21 @@ public class TestController {
      * @date 2025/3/2 12:29
      **/
     private String getCakeImgName() {
-        // 创建一个PathMatchingResourcePatternResolver实例，用于解析资源模式
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        // 根据指定的路径模式获取资源数组
-        Resource[] resources;
         try {
-            resources = resolver.getResources("classpath:static/upload_img/*");
+            // 匹配 upload_img 目录下的所有图片文件
+            Resource[] resources = resolver.getResources(
+                    "file:D:/Projects/graduation_design/cake-platform/upload_img/*.{jpg,png,gif,jpeg,bmp,webp}");
+
+            if (resources.length == 0) {
+                throw new RuntimeException("No images found in the specified directory");
+            }
+
+            // 随机返回一个文件名
+            return resources[(int) (Math.random() * resources.length)].getFilename();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to load images", e);
         }
-        return resources[(int) (Math.random() * resources.length)].getFilename();
     }
 
     /**

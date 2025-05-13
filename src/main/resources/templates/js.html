@@ -14,4 +14,57 @@
 
     <!-- custom - main-js -->
     <script src="../static/js/main.js" th:src="@{/js/main.js}"></script>
+
+    <script>
+        // 如果有服务器返回的消息，也自动消失
+        document.addEventListener('DOMContentLoaded', function () {
+            const serverAlert = document.getElementById('serverMessage');
+            if (serverAlert) {
+                setTimeout(function () {
+                    serverAlert.style.display = 'none';
+                }, 2000);
+            }
+        });
+
+        // 显示现代化弹窗
+        function showModernAlert(message, type = 'success', duration = 2000) {
+            const alert = document.getElementById('modernAlert');
+            const alertMessage = document.getElementById('alertMessage');
+            const alertIcon = document.getElementById('alertIcon');
+            // 设置消息内容
+            alertMessage.textContent = message;
+            // 设置类型和图标
+            alert.className = 'modern-alert ' + type;
+            switch (type) {
+                case 'success':
+                    alertIcon.textContent = '✓';
+                    break;
+                case 'error':
+                    alertIcon.textContent = '✕';
+                    break;
+                case 'warning':
+                    alertIcon.textContent = '!';
+                    break;
+            }
+            // 显示弹窗
+            alert.classList.add('show');
+            // 自动隐藏
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, duration);
+            // 点击关闭按钮也隐藏
+            alert.querySelector('.btn-close').addEventListener('click', () => {
+                alert.classList.remove('show');
+            });
+        }
+        // 页面加载时检查后端消息
+        document.addEventListener('DOMContentLoaded', function() {
+            const serverMessage = document.getElementById('serverMessage');
+            if (serverMessage) {
+                const message = serverMessage.getAttribute('data-message');
+                const type = serverMessage.getAttribute('data-type');
+                showModernAlert(message, type);
+            }
+        });
+    </script>
 </div>

@@ -41,8 +41,9 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant>
     @Override
     public Boolean saveUpdateMerchant(Map<String, Object> params) {
         Object username = params.get("username");
+        Object userId = params.get("user_id");
         long counted = userService.count(new QueryWrapper<User>().eq("username", username));
-        if (counted != 0) {
+        if (counted != 0 && userId == null) {
             throw new RuntimeException("用户名已存在");
         }
         Object password = params.get("password");
@@ -50,7 +51,6 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant>
         Object email = params.get("email");
         Object address = params.get("address");
         Object name = params.get("name");
-        Object userId = params.get("user_id");
         Object merchantId = params.get("merchant_id");
         //先新增商家，再新增用户
         Merchant merchant = new Merchant();

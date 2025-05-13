@@ -2,6 +2,7 @@ package com.crane.cpb.controller;
 
 import com.crane.cpb.model.domain.User;
 import com.crane.cpb.service.*;
+import com.crane.cpb.util.MessageUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +26,6 @@ public class IndexController {
 
     private final CakeService cakeService;
 
-    private final CakeTagService cakeTagService;
-
     private final UserService userService;
 
     /**
@@ -37,6 +36,7 @@ public class IndexController {
     @GetMapping("/index")
     public ModelAndView index(HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
+        MessageUtil.getStrideMessage(request, modelAndView);
         modelAndView.setViewName("index");
         tagService.setTagsType(modelAndView);
         //获取轮播图数据
@@ -48,11 +48,6 @@ public class IndexController {
         if (user != null) {
             modelAndView.addObject("currentUser", user);
             shoppingCartService.setCartData(request, modelAndView);
-        }
-        Object orderTrue = request.getSession().getAttribute("orderTrue");
-        if (orderTrue != null) {
-            modelAndView.addObject("orderTrue", orderTrue);
-            request.getSession().removeAttribute("orderTrue");
         }
         return modelAndView;
     }
@@ -70,6 +65,10 @@ public class IndexController {
         if (user != null) {
             modelAndView.addObject("currentUser", user);
             shoppingCartService.setCartData(request, modelAndView);
+        }
+        if (request.getSession().getAttribute("isUpdatePassword") != null) {
+            modelAndView.addObject("message", "修改成功，请重新登录");
+            request.getSession().removeAttribute("isUpdatePassword");
         }
         return modelAndView;
     }

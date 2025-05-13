@@ -70,6 +70,12 @@ public class CakeServiceImpl extends ServiceImpl<CakeMapper, Cake>
             cakeVo.setTagList(tagList);
         }
         cakeVo.setLaunchDate(cake.getLaunchDate());
+        Long merchantId = cake.getMerchantId();
+        if (merchantId == -1) {
+            cakeVo.setMerchantName("管理员生成");
+        } else {
+            cakeVo.setMerchantName(merchantService.getById(merchantId).getName());
+        }
         return cakeVo;
     }
 
@@ -77,7 +83,12 @@ public class CakeServiceImpl extends ServiceImpl<CakeMapper, Cake>
     public void setCarouselImage(ModelAndView modelAndView) {
         List<Long> cakeIds = orderItemMapper.select5Cake().stream().map(m ->
                 Long.parseLong(m.get("cake_id").toString())).toList();
-        List<CakeVo> list = list(new QueryWrapper<Cake>().in("cake_id", cakeIds)).stream().map(this::toVo).toList();
+        List<CakeVo> list;
+        if (!cakeIds.isEmpty()) {
+            list = list(new QueryWrapper<Cake>().in("cake_id", cakeIds)).stream().map(this::toVo).toList();
+        } else {
+            list = list(new QueryWrapper<Cake>().last("limit 5")).stream().map(this::toVo).toList();
+        }
         modelAndView.addObject("carouselImages", list);
     }
 
@@ -94,6 +105,9 @@ public class CakeServiceImpl extends ServiceImpl<CakeMapper, Cake>
         List<Map<String, Object>> hotCake = orderItemMapper.getHotCake();
         for (Map<String, Object> map : hotCake) {
             cakeIds.add((Long) map.get("cake_id"));
+        }
+        if (cakeIds.isEmpty()) {
+            return;
         }
         List<CakeVo> list = this.list(Wrappers.<Cake>lambdaQuery().in(Cake::getCakeId, cakeIds)).stream().map(this::toVo).toList();
         modelAndView.addObject("hotCake", list);

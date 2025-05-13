@@ -2,7 +2,9 @@ package com.crane.cpb.controller;
 
 import cn.hutool.crypto.SecureUtil;
 import com.crane.cpb.model.domain.User;
+import com.crane.cpb.service.ShoppingCartService;
 import com.crane.cpb.service.UserService;
+import com.crane.cpb.util.MessageUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +27,7 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final ShoppingCartService shoppingCartService;
 
     /**
      * 账户接口
@@ -36,12 +39,33 @@ public class UserController {
     public ModelAndView account(HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
         //校验是否登录
-        Object user = request.getSession().getAttribute("user");
+        User user = userService.currentUser(request);
         if (user == null) {
             modelAndView.setViewName("register");
         } else {
+            modelAndView.addObject("currentUser", user);
+            userService.setAccountData(user, modelAndView);
+            shoppingCartService.setCartData(request, modelAndView);
             modelAndView.setViewName("account");
         }
+        return modelAndView;
+    }
+
+    /**
+     * 修改密码
+     **/
+    @PostMapping("/updatePassword")
+    public ModelAndView updatePassword(HttpServletRequest request) {
+        User user = userService.currentUser(request);
+        if (user == null) {
+            return new ModelAndView("register");
+        }
+        String newPassword = request.getParameter("newPassword");
+        user.setPassword(SecureUtil.md5(newPassword));
+        ModelAndView modelAndView = new ModelAndView();
+        request.getSession().setAttribute("isUpdatePassword", true);
+        userService.logout(request);
+        modelAndView.setViewName("redirect:/jump/register");
         return modelAndView;
     }
 
@@ -54,10 +78,10 @@ public class UserController {
         Boolean register = userService.register(user);
         ModelAndView modelAndView = new ModelAndView();
         if (!register) {
-            modelAndView.addObject("message", "用户名已存在");
+            MessageUtil.setMessage(modelAndView, "用户名已存在");
             modelAndView.setViewName("register");
         } else {
-            modelAndView.addObject("message", "注册成功");
+            MessageUtil.setMessage(modelAndView, "注册成功，请输入账号登录");
             modelAndView.setViewName("register");
         }
         return modelAndView;
@@ -68,13 +92,14 @@ public class UserController {
         User user = new User();
         user.setUsername(params.get("username"));
         user.setPassword(SecureUtil.md5(params.get("password")));
-        Boolean login = userService.login(user, request);
+        User login = userService.login(user, request);
         ModelAndView modelAndView = new ModelAndView();
-        if (login) {
+        if (login != null) {
+            MessageUtil.setStrideMessage(request, "登录成功");
             modelAndView.setViewName("redirect:/index");
         } else {
             modelAndView.setViewName("register");
-            modelAndView.addObject("message", "用户名或密码错误");
+            MessageUtil.setMessage(modelAndView, "用户名或密码错误");
         }
         return modelAndView;
     }
@@ -83,19 +108,27 @@ public class UserController {
     public ModelAndView logout(HttpServletRequest request) {
         userService.logout(request);
         ModelAndView modelAndView = new ModelAndView();
+        MessageUtil.setStrideMessage(request, "已退出登录");
         modelAndView.setViewName("redirect:/index");
         return modelAndView;
     }
 
     /**
      * 后台登录
+     * 返回身份标识
      **/
     @GetMapping("/api/backgroundLogin")
-    public Boolean login(@RequestParam String username, @RequestParam String password, HttpServletRequest request) {
+    public String login(@RequestParam String username, @RequestParam String password, HttpServletRequest request) {
         User user = new User();
         user.setUsername(username);
         user.setPassword(SecureUtil.md5(password));
-        return userService.login(user, request);
+        User login = userService.login(user, request);
+        return switch (login.getIdentity()) {
+            case 0 -> "customer";
+            case 1 -> "merchant";
+            case 2 -> "admin";
+            default -> "error";
+        };
     }
 
     /**

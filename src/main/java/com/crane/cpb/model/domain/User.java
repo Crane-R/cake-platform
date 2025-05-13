@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * @TableName user
@@ -37,10 +38,15 @@ public class User implements Serializable {
      */
     private String email;
 
+    private BigDecimal balance;
+
     /**
      * 身份，0顾客1商家2管理员
      */
     private Integer identity;
+
+    @TableField(exist = false)
+    private String identityName;
 
     /**
      * 身份索引，对应身份信息的主键

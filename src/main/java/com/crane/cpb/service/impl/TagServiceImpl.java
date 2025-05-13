@@ -1,5 +1,6 @@
 package com.crane.cpb.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -36,9 +37,21 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
         //应该只给前几个，不能太多，选出标签数最多的前十个
         List<Map<String, Object>> tagMaps = cakeTagMapper.selectTagListDesc10();
         List<Object> tagId = tagMaps.stream().map(e -> e.get("tag_id")).toList();
+        List<Tag> tagList = new ArrayList<>();
         if (!tagId.isEmpty()) {
-            modelAndView.addObject("typeList", tagMapper.selectList(new QueryWrapper<Tag>().in("tag_id", tagId)));
+            tagList = tagMapper.selectList(new QueryWrapper<Tag>().in("tag_id", tagId));
         }
+        //如果不足11个就直接随机充数
+        if (tagList.size() < 11) {
+            LambdaQueryWrapper<Tag> queryWrapper = Wrappers.<Tag>lambdaQuery();
+            if (!tagId.isEmpty()) {
+                queryWrapper.notIn(Tag::getTagId, tagId);
+            }
+            queryWrapper.eq(Tag::getIsType, 1);
+            queryWrapper.last("limit " + (11 - tagList.size()));
+            tagList.addAll(super.list(queryWrapper));
+        }
+        modelAndView.addObject("typeList", tagList);
     }
 
     @Override
@@ -73,7 +86,10 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
         for (int i = 0; i < (Math.min(maxHeap.size(), 6)); i++) {
             Map.Entry<String, Long> poll = maxHeap.poll();
             assert poll != null;
-            tagList.add(tagMapper.selectById(poll.getKey()));
+            Tag tag = tagMapper.selectById(poll.getKey());
+            if (tag != null) {
+                tagList.add(tag);
+            }
         }
         modelAndView.addObject("hotCategory", tagList);
     }

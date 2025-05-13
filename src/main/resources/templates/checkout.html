@@ -5,15 +5,26 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-
     <title>结账</title>
+    <link rel="shortcut icon" th:href="@{/images/logo/favourite_icon_1.png}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/woocommerce-2.css}">
     <div th:replace="~{css::css}"></div>
 
 </head>
 
+<div th:replace="~{messageStyle::messageStyle}"></div>
 
 <body>
+
+<!-- 现代化弹窗 -->
+<div id="modernAlert" class="modern-alert" role="alert">
+    <span class="alert-icon" id="alertIcon">✓</span>
+    <div class="alert-content" id="alertMessage">操作成功！这是一个示例消息。</div>
+    <button type="button" class="btn-close" aria-label="Close"></button>
+</div>
+
+<div id="serverMessage" th:if="${message}" th:attr="data-message=${message}, data-type=${messageType ?: 'success'}"
+     style="display: none;"></div>
 
 <!-- body_wrap - start -->
 <div class="body_wrap">
@@ -53,11 +64,23 @@
                                   action="/checkout/checkout" enctype="multipart/form-data">
                                 <div class="col2-set" id="customer_details">
                                     <div class="coll-1">
+                                        <h3>选择已有地址</h3>
+                                        <div class="form-check" th:each="item : ${addressList}">
+                                            <input class="form-check-input" type="radio" name="existAddress"
+                                                   id="flexRadioDefault1" th:value="${item?.content}" checked="checked">
+                                            <label class="form-check-label" for="flexRadioDefault1"
+                                                   th:text="${item?.content}">
+                                                Default radio
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <div class="coll-1">
                                         <div class="woocommerce-billing-fields">
-                                            <h3>地址</h3>
+                                            <h3>新增地址</h3>
                                             <p class="form-row form-row form-row-first validate-required"
                                                id="billing_first_name_field">
-                                                <label for="billing_first_name" class="">输入您的地址<abbr
+                                                <label for="billing_first_name" class="">输入一个新地址（输入后会以该地址下单）<abbr
                                                         class="required" title="required">*</abbr></label>
                                                 <input type="text" class="input-text " name="address"
                                                        id="billing_first_name" placeholder="" autocomplete="given-name"
@@ -140,13 +163,13 @@
         </section>
         <!-- checkout-section - end
         ================================================== -->
-        <script>
-            function checkoutOrder() {
-                $.get('/checkout/checkout')
-                alert('下单成功')
-                window.location = '/index'
-            }
-        </script>
+        <!--        <script>-->
+        <!--            function checkoutOrder() {-->
+        <!--                $.get('/checkout/checkout')-->
+        <!--                alert('下单成功')-->
+        <!--                window.location = '/index'-->
+        <!--            }-->
+        <!--        </script>-->
         <div th:replace="~{component::newsletter}"></div>
     </main>
     <!-- main body - end

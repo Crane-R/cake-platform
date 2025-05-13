@@ -49,6 +49,7 @@ public class CakeController {
     // 上传目录，会在项目根目录下的static/upload_img文件夹
     private static final String UPLOAD_DIR = "upload_img/";
     private final CakeImgService cakeImgService;
+    private final MerchantService merchantService;
 
     /**
      * 跳转到网格列表
@@ -66,7 +67,11 @@ public class CakeController {
             Long tagId = tagService.getOne(Wrappers.<Tag>lambdaQuery().eq(Tag::getName, type)).getTagId();
             List<Long> cakeIds = cakeTagService.list(Wrappers.<CakeTag>lambdaQuery().eq(CakeTag::getTagId, tagId))
                     .stream().map(CakeTag::getCakeId).toList();
-            queryWrapper.in(Cake::getCakeId, cakeIds);
+            if (!cakeIds.isEmpty()) {
+                queryWrapper.in(Cake::getCakeId, cakeIds);
+            } else {
+                queryWrapper.eq(Cake::getCakeId, -1);
+            }
         }
         Page<Cake> page = cakeService.page(new Page<>(pageNum, 12), queryWrapper);
         Page<CakeVo> pageVo = new Page<>();
@@ -163,9 +168,14 @@ public class CakeController {
     @GetMapping("/page")
     public Page<Cake> page(@RequestParam int current,
                            @RequestParam int size,
-                           @RequestParam(required = false) String cakeName) {
+                           @RequestParam(required = false) String cakeName, HttpServletRequest request) {
         LambdaQueryWrapper<Cake> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByDesc(Cake::getCakeId);
+        //如果是管理员，蛋糕都可以看，如果是商家，只能看自己的
+        User user = userService.currentUser(request);
+        if (user.getIdentity() == 1) {
+            queryWrapper.eq(Cake::getMerchantId, merchantService.getById(user.getIdentityIndex()).getMerchantId());
+        }
         if (StrUtil.isNotEmpty(cakeName)) {
             queryWrapper.like(Cake::getName, cakeName);
         }

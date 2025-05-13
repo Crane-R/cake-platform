@@ -3,6 +3,7 @@ package com.crane.cpb.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.crane.cpb.model.domain.User;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author Xanthos
@@ -13,10 +14,15 @@ public interface UserService extends IService<User> {
 
     Boolean register(User user);
 
-    Boolean login(User user, HttpServletRequest request);
+    User login(User user, HttpServletRequest request);
 
     User currentUser(HttpServletRequest request);
 
     void logout(HttpServletRequest request);
+
+    /**
+     * 设置个人账户页数据
+     **/
+    void setAccountData(User user, ModelAndView modelAndView);
 
 }

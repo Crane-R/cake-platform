@@ -22,7 +22,7 @@ public interface OrderItemMapper extends BaseMapper<OrderItem> {
     @Select("select sum(quantity) from order_item")
     BigDecimal cakeSum();
 
-    @Select("select cake_id,sum(quantity) as sum from order_item group by cake_id order by sum desc limit 3")
+    @Select("select cake_id,sum(quantity) as sum from order_item group by cake_id order by sum desc limit 6")
     List<Map<String,Object>> getHotCake();
 
 }
