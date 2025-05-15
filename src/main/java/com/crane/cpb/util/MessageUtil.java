@@ -40,4 +40,9 @@ public final class MessageUtil {
         request.getSession().setAttribute("messageType", "error");
     }
 
+    public static void setErrorMessage(ModelAndView modelAndView, String message) {
+        modelAndView.addObject("message", message);
+        modelAndView.addObject("messageType", "error");
+    }
+
 }

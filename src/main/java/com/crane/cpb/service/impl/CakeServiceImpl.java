@@ -127,7 +127,7 @@ public class CakeServiceImpl extends ServiceImpl<CakeMapper, Cake>
             throw new RuntimeException("用户无法添加");
         }
         Merchant merchant = merchantService.getById(user.getIdentityIndex());
-        cake.setMerchantId(merchant.getMerchantId());
+        cake.setMerchantId(merchant == null ? -1 : merchant.getMerchantId());
         boolean cakeSaved = super.saveOrUpdate(cake);
         if (!cakeSaved) {
             throw new RuntimeException("保存失败");

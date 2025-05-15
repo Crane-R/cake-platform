@@ -53,6 +53,9 @@ public class Cake implements Serializable {
     private Date launchDate;
 
     @TableField(exist = false)
+    private String launchDateStr;
+
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
     @TableField(exist = false)

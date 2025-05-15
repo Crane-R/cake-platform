@@ -1,5 +1,6 @@
 package com.crane.cpb.controller;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.crane.cpb.model.domain.User;
 import com.crane.cpb.service.ShoppingCartService;
@@ -70,15 +71,23 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ModelAndView register(@RequestParam Map<String, String> params) {
+    public ModelAndView register(@RequestParam Map<String, String> params, HttpServletRequest request) {
+        String username = params.get("username");
+        String password = params.get("password");
+        if (StrUtil.hasEmpty(username, password)) {
+            ModelAndView modelAndView = new ModelAndView();
+            MessageUtil.setErrorMessage(modelAndView, "请输入用户名和密码");
+            modelAndView.setViewName("register");
+            return modelAndView;
+        }
         User user = new User();
-        user.setUsername(params.get("username"));
-        user.setPassword(SecureUtil.md5(params.get("password")));
+        user.setUsername(username);
+        user.setPassword(SecureUtil.md5(password));
         user.setEmail(params.get("email"));
         Boolean register = userService.register(user);
         ModelAndView modelAndView = new ModelAndView();
         if (!register) {
-            MessageUtil.setMessage(modelAndView, "用户名已存在");
+            MessageUtil.setErrorMessage(modelAndView, "用户名已存在");
             modelAndView.setViewName("register");
         } else {
             MessageUtil.setMessage(modelAndView, "注册成功，请输入账号登录");
@@ -123,6 +132,9 @@ public class UserController {
         user.setUsername(username);
         user.setPassword(SecureUtil.md5(password));
         User login = userService.login(user, request);
+        if (login == null) {
+            throw new RuntimeException("用户名或密码错误");
+        }
         return switch (login.getIdentity()) {
             case 0 -> "customer";
             case 1 -> "merchant";

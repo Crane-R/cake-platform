@@ -1,5 +1,6 @@
 package com.crane.cpb.controller;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -179,7 +180,9 @@ public class CakeController {
         if (StrUtil.isNotEmpty(cakeName)) {
             queryWrapper.like(Cake::getName, cakeName);
         }
-        return cakeService.page(new Page<>(current, size), queryWrapper);
+        Page<Cake> page = cakeService.page(new Page<>(current, size), queryWrapper);
+        page.getRecords().forEach(cake -> cake.setLaunchDateStr(DateUtil.format(cake.getLaunchDate(),"yyyy-MM-dd HH:mm:ss")));
+        return page;
     }
 
     @GetMapping("/getById/{cakeId}")

@@ -8,7 +8,22 @@
     <link rel="shortcut icon" th:href="@{/images/logo/favourite_icon_1.png}">
     <div th:replace="~{css::css}"></div>
 </head>
+
+<div th:replace="~{messageStyle::messageStyle}"></div>
+
 <body>
+
+<!-- 现代化弹窗 -->
+<div id="modernAlert" class="modern-alert" role="alert">
+    <span class="alert-icon" id="alertIcon">✓</span>
+    <div class="alert-content" id="alertMessage">操作成功！这是一个示例消息。</div>
+    <button type="button" class="btn-close" aria-label="Close"></button>
+</div>
+
+<div id="serverMessage" th:if="${message}" th:attr="data-message=${message}, data-type=${messageType ?: 'success'}"
+     style="display: none;"></div>
+
+
 <!-- body_wrap - start -->
 <div class="body_wrap">
     <div th:replace="~{component::backtotopAndPreload}"></div>
@@ -71,9 +86,9 @@
                                 $.get(url)
                                 var flag = [[${addFail}]];
                                 if (!flag) {
-                                    alert('添加成功')
+                                    showModernAlert('添加成功')
                                 } else {
-                                    alert('添加失败，购物车已满')
+                                    showModernAlert('添加失败，购物车已满', 'error')
                                 }
                             }
 

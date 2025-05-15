@@ -72,17 +72,21 @@
                             <td class="text-center"><span class="price_text"
                                                           th:text="'￥'+${cartItem.cake.price}">$10.50</span></td>
                             <td class="text-center">
-                                <form action="#">
+                                <form action="/cart/updateCake" method="get">
+                                    <input type="text" th:value="${cartItem.cake.cakeId}" name="cakeId" hidden="hidden">
                                     <div class="quantity_input">
                                         <button type="button" class="input_number_decrement">
                                             <i class="fal fa-minus"></i>
                                         </button>
                                         <input th:classappend="'input_number_'+${cartItemStat.index}" type="text"
-                                               value="1" th:value="${cartItem.num}"/>
+                                               value="1" name="cakeValue" th:value="${cartItem.num}"/>
                                         <button type="button" class="input_number_increment">
                                             <i class="fal fa-plus"></i>
                                         </button>
                                     </div>
+                                    <button type="submit" class="input_number_increment" style="color: grey">
+                                        确认数量
+                                    </button>
                                 </form>
                             </td>
                             <td class="text-center"><span class="price_text" th:text="'￥'+${cartItem.cake.amount}">$10.50</span>
@@ -116,7 +120,7 @@
 
                         <div class="col col-lg-6">
                             <ul class="btns_group ul_li_right">
-                                <li><a class="btn border_black" href="/cart/index">更新购物车</a></li>
+                                <li><a class="btn border_black" href="/cart/index">刷新购物车</a></li>
                                 <li><a class="btn btn_dark" href="/checkout/index">结账</a></li>
                             </ul>
                         </div>

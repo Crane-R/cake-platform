@@ -1,6 +1,9 @@
 package com.crane.cpb.controller;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.crane.cpb.model.domain.ShoppingCart;
 import com.crane.cpb.model.domain.User;
 import com.crane.cpb.service.ShoppingCartService;
@@ -43,7 +46,7 @@ public class CartController {
         }
         User user = userService.currentUser(request);
         if (user == null) {
-            return new ModelAndView("register");
+            return new ModelAndView("redirect:/jump/register");
         }
         Long userId = user.getUserId();
         //判断购物车商品数量是不是超过50，最大50
@@ -101,5 +104,37 @@ public class CartController {
         return modelAndView;
     }
 
+    /**
+     * 更新购物车中蛋糕的数量
+     **/
+    @GetMapping("/updateCake")
+    public ModelAndView updateCart(HttpServletRequest request) {
+        String cakeValue = request.getParameter("cakeValue");
+        String cakeId = request.getParameter("cakeId");
+        if (StrUtil.isAllNotEmpty(cakeValue, cakeId)) {
+            User user = userService.currentUser(request);
+            if (user == null) {
+                return new ModelAndView("redirect:/jump/register");
+            }
+            LambdaQueryWrapper<ShoppingCart> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(ShoppingCart::getUserId, user.getUserId());
+            queryWrapper.eq(ShoppingCart::getCakeId, cakeId);
+            queryWrapper.eq(ShoppingCart::getIsWish, 0);
+            queryWrapper.last("limit 1");
+            ShoppingCart one = shoppingCartService.getOne(queryWrapper);
+            if (one != null) {
+                int value = Integer.parseInt(cakeValue);
+                if(value == 0){
+                    shoppingCartService.removeById(one.getScId());
+                }else {
+                    LambdaUpdateWrapper<ShoppingCart> updateWrapper = new LambdaUpdateWrapper<>();
+                    updateWrapper.eq(ShoppingCart::getScId, one.getScId());
+                    updateWrapper.set(ShoppingCart::getQuantity,value );
+                    shoppingCartService.update(updateWrapper);
+                }
+            }
+        }
+        return new ModelAndView("redirect:/cart/index");
+    }
 
 }

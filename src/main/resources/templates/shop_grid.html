@@ -211,16 +211,16 @@
                                 </div>
 
                                 <div class="col col-md-4">
-                                    <form action="#">
-                                        <div class="select_option clearfix">
-                                            <select>
-                                                <option data-display="无排序">无排序</option>
-                                                <option value="1">按名称排序</option>
-                                                <option value="2">按价格排序</option>
-                                                <option value="3">按数量排序</option>
-                                            </select>
-                                        </div>
-                                    </form>
+<!--                                    <form action="#">-->
+<!--                                        <div class="select_option clearfix">-->
+<!--                                            <select>-->
+<!--                                                <option data-display="无排序">无排序</option>-->
+<!--                                                <option value="1">按名称排序</option>-->
+<!--                                                <option value="2">按价格排序</option>-->
+<!--                                                <option value="3">按数量排序</option>-->
+<!--                                            </select>-->
+<!--                                        </div>-->
+<!--                                    </form>-->
                                 </div>
 
                                 <div class="col col-md-4">
@@ -247,7 +247,7 @@
                                                      style="height: 168px" alt/>
                                                 <div class="actions">
                                                     <ul>
-                                                        <li>
+                                                        <li th:if="${currentUser!=null}">
                                                             <a href="#" th:onclick="|addToWish(${cake.cakeId},1)|">
                                                                 <svg
                                                                         role="img"
@@ -339,7 +339,7 @@
                                                             </span>
                                                         </ins>
                                                     </span>
-                                                <div class="add-cart-area">
+                                                <div class="add-cart-area" th:if="${currentUser!=null}">
                                                     <button class="add-to-cart"
                                                             th:onclick="|addToCart(${cake.cakeId},1)|">
                                                         添加到购物车
